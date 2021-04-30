@@ -7,7 +7,7 @@ class Renderer:
     def render(self):
         rendered = False
         visible_tiles = ['tiles']
-        self.game.screen.fill((0,0,0))
+        self.game.screen.fill((107,139,255))
 
         for tile in self.game.tilemap.tiles:
             if tile['layer'] == 0 and not rendered:

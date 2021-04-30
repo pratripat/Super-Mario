@@ -88,7 +88,7 @@ class Selector:
     def load_image_dimensions(self, image):
         if self.resize:
             if self.scale:
-                dimensions = (image.get_width()*self.scale, image.get_height()*self.scale)
+                dimensions = (int(image.get_width()*self.scale), int(image.get_height()*self.scale))
             else:
                 dimensions = (res, res)
 

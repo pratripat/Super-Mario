@@ -1,8 +1,9 @@
+import pygame
 from .entity import Entity
 
 class Mario(Entity):
     def __init__(self, game):
-        super().__init__(game.animations, 'mario', [300,100], False, 'idle')
+        super().__init__(game.animations, 'mario', [500,100], False, 'idle')
         self.game = game
         self.airtimer = 0
         self.speed = 6
@@ -10,14 +11,11 @@ class Mario(Entity):
         self.directions['down'] = True
 
     def run(self):
-        self.move(self.game.tilemap.get_tiles('tiles'), self.game.dt)
+        self.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
         self.movement()
         self.update(self.game.dt)
 
     def movement(self):
-        # print(self.collisions)
-        # print(self.directions)
-
         animation_state = 'idle'
 
         if self.collisions['bottom']:
@@ -28,18 +26,28 @@ class Mario(Entity):
 
         if self.directions['left'] and not self.directions['right']:
             animation_state = 'run'
-            self.velocity[0] -= 2
+            self.velocity[0] -= 0.1
             self.velocity[0] = max(-self.speed, self.velocity[0])
             self.flip(True)
 
+            if self.velocity[0] >= 0:
+                animation_state = 'slide'
+
         if self.directions['right'] and not self.directions['left']:
             animation_state = 'run'
-            self.velocity[0] += 2
+            self.velocity[0] += 0.1
             self.velocity[0] = min(self.speed, self.velocity[0])
             self.flip(False)
 
+            if self.velocity[0] <= 0:
+                animation_state = 'slide'
+
         if not (self.directions['right'] or self.directions['left']):
-            self.velocity[0] = 0
+            if abs(self.velocity[0]) > 1:
+                self.velocity[0] -= 0.2 * self.velocity[0]/abs(self.velocity[0])
+                animation_state = 'slide'
+            else:
+                self.velocity[0] = 0
 
         if self.directions['down']:
             self.velocity[1] += 1
@@ -47,7 +55,7 @@ class Mario(Entity):
         #Jump
         elif self.directions['up']:
             if self.airtimer < 10:
-                self.velocity[1] -= 4.6*self.airtimer/10
+                self.velocity[1] -= 3.6*self.airtimer/10
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
@@ -56,5 +64,8 @@ class Mario(Entity):
                 self.directions['down'] = True
 
         self.velocity[1] = min(8, self.velocity[1])
+
+        if self.airtimer > 3:
+            animation_state = 'jump'
 
         self.set_animation(animation_state)

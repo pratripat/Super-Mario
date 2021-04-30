@@ -6,6 +6,8 @@ from .tilemap import TileMap
 from .camera import Camera
 from .mario import Mario
 
+pygame.init()
+
 class Game:
     def __init__(self):
         pygame.display.set_caption('Super Mario')
@@ -13,12 +15,15 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.animations = Animation_Handler()
-        self.entities = Entity_Manager(self)
         self.tilemap = TileMap('data/levels/level1.json')
+        self.entities = Entity_Manager(self)
         self.renderer = Renderer(self)
         self.camera = Camera()
         self.camera.set_target(self.entities.mario)
         self.camera.set_movement(0.05)
+
+        pygame.mixer.music.load('data/main_theme.ogg')
+        pygame.mixer.music.play(-1)
 
     @property
     def dt(self):
@@ -30,7 +35,7 @@ class Game:
     def run(self):
         self.clock.tick(80)
 
-        self.camera.update(self.screen)
+        self.camera.update(self.screen, [[self.tilemap.left, self.tilemap.right], [-float('inf'), float('inf')]])
         self.entities.run()
 
         self.renderer.render()
