@@ -27,7 +27,7 @@ class Entity:
         self.current_animation.run(dt)
 
     #Moves the object and collides with rects
-    def move(self, rects, dt):
+    def move(self, rects, dt, tilemap=None):
         self.collisions = {k:False for k in ('top', 'right', 'bottom', 'left')}
 
         self.position[0] += round(self.velocity[0]*dt*80)
@@ -61,6 +61,12 @@ class Entity:
                 self.collisions['top'] = True
             if self.centered:
                 self.position[1] += self.image.get_height()//2
+
+        if tilemap:
+            if self.position[0] < tilemap.left:
+                self.position[0] = tilemap.left
+            if self.position[0] > tilemap.right-self.image.get_width():
+                self.position[0] = tilemap.right-self.image.get_width()
 
     #Returns the rects the player is colliding with
     def get_colliding_objects(self, objs):

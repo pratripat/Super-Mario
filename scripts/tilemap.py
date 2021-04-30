@@ -45,6 +45,18 @@ class TileMap:
 
         self.tiles.sort(key=get_layer)
 
+        record_left = float('inf')
+        record_right = -float('inf')
+        for tile in self.tiles:
+            if tile['layer'] == 0:
+                if tile['position'][0] < record_left:
+                    record_left = tile['position'][0]
+                if tile['position'][0]+tile['image'].get_width() > record_right:
+                    record_right = tile['position'][0]+tile['image'].get_width()
+
+        self.left = record_left
+        self.right = record_right
+
     def load_image_offset(self, image, dimensions, id, index):
         try:
             offset_data = json.load(open(f'data/configs/offsets/{id}_offset.json', 'r'))
