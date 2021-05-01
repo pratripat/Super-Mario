@@ -44,7 +44,7 @@ class Mario(Entity):
 
         if not (self.directions['right'] or self.directions['left']):
             if abs(self.velocity[0]) > 1:
-                self.velocity[0] -= 0.2 * self.velocity[0]/abs(self.velocity[0])
+                self.velocity[0] -= 0.4 * self.velocity[0]/abs(self.velocity[0])
                 animation_state = 'slide'
             else:
                 self.velocity[0] = 0
@@ -55,7 +55,7 @@ class Mario(Entity):
         #Jump
         elif self.directions['up']:
             if self.airtimer < 10:
-                self.velocity[1] -= 3.6*self.airtimer/10
+                self.velocity[1] -= 3.7*self.airtimer/10
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
