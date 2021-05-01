@@ -7,6 +7,7 @@ class Entity_Manager:
         self.game = game
         self.mario = Mario(game)
         self.blocks = [Question_Block(game, rect) for rect in self.game.tilemap.get_tiles('question')] + [Brick(game, rect) for rect in self.game.tilemap.get_tiles('brick')]
+        self.brick_pieces = []
 
     def run(self):
         for question_block in self.blocks[:]:
@@ -15,6 +16,9 @@ class Entity_Manager:
             if question_block.remove:
                 self.blocks.remove(question_block)
 
+        for piece in self.brick_pieces:
+            piece.update()
+
         self.mario.run()
 
     def render(self):
@@ -22,6 +26,9 @@ class Entity_Manager:
             question_block.render()
 
         self.mario.render(self.game.screen, self.game.camera.scroll)
+
+        for piece in self.brick_pieces:
+            piece.render()
 
     def get_colliding_entities(self):
         colliding_blocks = []

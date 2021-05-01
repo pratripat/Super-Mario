@@ -22,7 +22,7 @@ class Game:
         self.camera.set_target(self.entities.mario)
         self.camera.set_movement(0.05)
 
-        pygame.mixer.music.load('data/main_theme.ogg')
+        pygame.mixer.music.load('data/music/main_theme.wav')
         pygame.mixer.music.play(-1)
 
     @property
