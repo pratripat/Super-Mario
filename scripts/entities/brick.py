@@ -4,7 +4,7 @@ import pygame, math
 
 class Brick(Block):
     def __init__(self, game, rect):
-        super().__init__(rect)
+        super().__init__(rect, 'brick')
         self.game = game
         self.animation = self.game.animations.get_animation('brick')
         self.brick_break_sfx = pygame.mixer.Sound('data/sfx/brick_break.wav')

@@ -1,14 +1,17 @@
-import pygame
-from .entity import Entity
+import pygame, json
+from ..entity import Entity
 
 class Mario(Entity):
     def __init__(self, game):
-        super().__init__(game.animations, 'mario', [500,100], False, 'idle')
+        super().__init__(game.animations, 'small_mario', [500,100], False, 'idle')
         self.game = game
         self.airtimer = 0
         self.speed = 6
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
+
+    def render(self):
+        super().render(self.game.screen, self.game.camera.scroll)
 
     def run(self):
         self.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
@@ -69,3 +72,7 @@ class Mario(Entity):
             animation_state = 'jump'
 
         self.set_animation(animation_state)
+
+    def change_state(self, type):
+        mario_states = json.load(open('data/configs/mario_states.json', 'r'))
+        self.id = mario_states[type]
