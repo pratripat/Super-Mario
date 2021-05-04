@@ -47,15 +47,24 @@ class TileMap:
 
         record_left = float('inf')
         record_right = -float('inf')
+        record_top = float('inf')
+        record_bottom = -float('inf')
+
         for tile in self.tiles:
             if tile['layer'] == 0:
                 if tile['position'][0] < record_left:
                     record_left = tile['position'][0]
                 if tile['position'][0]+tile['image'].get_width() > record_right:
                     record_right = tile['position'][0]+tile['image'].get_width()
+                if tile['position'][1] < record_top:
+                    record_top = tile['position'][1]
+                if tile['position'][1]+tile['image'].get_height() > record_bottom:
+                    record_bottom = tile['position'][1]+tile['image'].get_height()
 
         self.left = record_left
         self.right = record_right
+        self.top = record_top
+        self.bottom = record_bottom
 
     def load_image_offset(self, image, dimensions, id, index):
         try:

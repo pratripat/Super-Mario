@@ -1,9 +1,10 @@
-from .funcs import *
+from ..funcs import *
 import math
 
 class Block:
-    def __init__(self, rect):
+    def __init__(self, rect, type):
         self.rect = rect
+        self.type = type
         self.remove = False
         self.updating_offset = False
         self.offset = 0

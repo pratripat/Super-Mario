@@ -3,7 +3,7 @@ import pygame
 
 class Question_Block(Block):
     def __init__(self, game, rect):
-        super().__init__(rect)
+        super().__init__(rect, 'question')
         self.game = game
         self.animation = self.game.animations.get_animation('question_block')
         self.coin_sfx = pygame.mixer.Sound('data/sfx/coin.wav')

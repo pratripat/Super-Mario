@@ -17,4 +17,12 @@ class Brick_Piece:
         self.position[0] += (self.velocity[0]*self.game.dt*80)
         self.position[1] += (self.velocity[1]*self.game.dt*80)
 
-        self.velocity[1] += 0.1
+        self.velocity[1] += 0.2
+
+    @property
+    def offscreen(self):
+        return (
+            self.position[0]+self.image.get_width() < self.game.camera.scroll[0] or
+            self.position[1] > self.game.tilemap.right or
+            self.position[1] > self.game.tilemap.bottom
+        )

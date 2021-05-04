@@ -28,6 +28,8 @@ class Camera:
             if self.scroll[1] > restrainments[1][1]-surface.get_height():
                 self.scroll[1] = restrainments[1][1]-surface.get_height()
 
+            self.scroll[1] = restrainments[1][1]-surface.get_height()
+
     def set_target(self, target):
         self.target = target
 
