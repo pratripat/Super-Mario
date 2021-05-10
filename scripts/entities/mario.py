@@ -6,7 +6,7 @@ class Mario(Entity):
         super().__init__(game.animations, 'small_mario', [500,100], False, 'idle')
         self.game = game
         self.airtimer = 0
-        self.speed = 6
+        self.speed = 5
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
 
