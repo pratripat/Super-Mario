@@ -1,93 +1,98 @@
-import pygame, sys, json
-from .funcs import *
+import pygame, json, sys
+from scripts.funcs import *
 
-graphics_file_path = 'data/graphics/spritesheet/'
-res = 48
+RES = 48
 
-class TileMap:
+class Tilemap:
     def __init__(self, filename):
-        self.tiles = []
         self.filename = filename
-        self.load_map()
+        self.entities = []
+        self.load()
 
-    #Loads the json file (map) and stores all the images
-    def load_map(self):
+    #Loads the json file
+    def load(self):
         data = json.load(open(self.filename, 'r'))
+        for position in data:
+            pos, layer = position.split(':')
+            id, filepath, index, scale = data[position]
 
-        for entity in data.values():
-            id = entity['id']
-            position = entity['position']
-            position = [position[0]*res, position[1]*res]
-            index = entity['index']
-            layer = entity['layer']
-            dimensions = entity['dimensions']
-            spritesheet_path = graphics_file_path+id+'.png'
+            x, y = pos.split(';')
+            pos = [int(float(x))*RES, int(float(y))*RES]
 
-            try:
-                image = load_images_from_spritesheet(spritesheet_path)[index]
+            image = load_images_from_spritesheet('data/graphics/spritesheet/'+filepath+'.png')[index]
+            image = pygame.transform.scale(image, (image.get_width()*scale, image.get_height()*scale))
 
-                offset = self.load_image_offset(image, dimensions, id, index)
-                image = pygame.transform.scale(image, dimensions)
-                self.tiles.append({'image':image, 'position':position, 'offset': offset, 'layer':layer, 'id': id})
-            except Exception as er:
-                try:
-                    image = pygame.image.load(spritesheet_path).convert()
-                    image.set_colorkey((0,0,0))
-                    offset = self.load_image_offset(image, dimensions, 'hound', index)
-                    image = pygame.transform.scale(image, dimensions)
-                    self.tiles.append({'image':image, 'position':position, 'offset': offset, 'layer':layer, 'id': id})
-                except Exception as e:
-                    print(f'could not load {spritesheet_path}')
+            dimensions = image.get_size()
 
-        #Sorting the tiles according to the layer
-        def get_layer(dict):
-            return dict['layer']
+            offset = self.load_offset(id, index)
 
-        self.tiles.sort(key=get_layer)
+            self.entities.append({
+                'position': pos,
+                'offset': offset,
+                'layer': layer,
+                'id': id,
+                'filepath': filepath,
+                'image': image,
+                'index': index,
+                'scale': scale,
+                'dimensions': dimensions
+            })
 
-        record_left = float('inf')
-        record_right = -float('inf')
-        record_top = float('inf')
-        record_bottom = -float('inf')
+        horizontal_positions = [entity['position'][0] for entity in self.entities]
+        vertical_positions = [entity['position'][1] for entity in self.entities]
+        self.left = min(horizontal_positions)
+        self.right = max(horizontal_positions)
+        self.top = min(vertical_positions)
+        self.bottom = max(vertical_positions)
 
-        for tile in self.tiles:
-            if tile['layer'] == 0:
-                if tile['position'][0] < record_left:
-                    record_left = tile['position'][0]
-                if tile['position'][0]+tile['image'].get_width() > record_right:
-                    record_right = tile['position'][0]+tile['image'].get_width()
-                if tile['position'][1] < record_top:
-                    record_top = tile['position'][1]
-                if tile['position'][1]+tile['image'].get_height() > record_bottom:
-                    record_bottom = tile['position'][1]+tile['image'].get_height()
-
-        self.left = record_left
-        self.right = record_right
-        self.top = record_top
-        self.bottom = record_bottom
-
-    def load_image_offset(self, image, dimensions, id, index):
+    #Loads offset with id and index
+    def load_offset(self, id, index):
         try:
-            offset_data = json.load(open(f'data/configs/offsets/{id}_offset.json', 'r'))
+            offset_data = json.load(open(f'data/config/offsets/{id}.json', 'r'))
             offset = offset_data[str(index)]
-            offset[0] *= dimensions[0]/image.get_width()
-            offset[1] *= dimensions[1]/image.get_height()
+            return offset
         except:
-            offset = [0,0]
+            return [0,0]
 
-        return offset
+    #Returns entities that are colliding with the given rect
+    def get_colliding_entities(self, ids, rect):
+        entities = []
+        colliding_rects = []
 
-    #Returns tiles with same id and layer(not necessary)
-    def get_tiles(self, id, layer=None):
-        tiles = []
+        for id in ids:
+            entities.extend(self.get_tiles_with_id(id))
 
-        for tile in self.tiles:
-            if tile['id'] == id:
-                if layer != None:
-                    if tile['layer'] != layer:
-                        continue
+        for entity in entities:
+            entity_rect = pygame.Rect(entity['position'][0]+entity['offset'][0], entity['position'][1]+entity['offset'][1], *entity['dimensions'])
+            if entity_rect.colliderect(rect):
+                colliding_rects.append(entity_rect)
 
-                rect = pygame.Rect(*tile['position'], *tile['image'].get_size())
-                tiles.append(rect)
+        return colliding_rects
 
-        return tiles
+    #Returns entities with the same id and layer
+    def get_tiles_with_id(self, id, layer=None):
+        entities = []
+        for entity in self.entities:
+            if entity['id'] == id:
+                if layer != None and entity['layer'] != layer:
+                    continue
+                entities.append(entity)
+        return entities
+
+    def get_rects_with_id(self, id, layer=None):
+        rects = []
+        for entity in self.entities:
+            if entity['id'] == id:
+                rect = pygame.Rect(entity['position'][0]+entity['offset'][0], entity['position'][1]+entity['offset'][1], *entity['dimensions'])
+                if layer != None and entity['layer'] != layer:
+                    continue
+                rects.append(rect)
+        return rects
+
+    #Removes a entity from given position and layer
+    def remove_entity(self, pos, layer=None):
+        for entity in self.entities[:]:
+            if entity['position'] == pos:
+                if layer != None and entity['layer'] != layer:
+                    continue
+                self.entities.remove(entity)

@@ -2,7 +2,7 @@ import pygame, sys
 from .entity_manager import Entity_Manager
 from .animation_handler import Animation_Handler
 from .renderer import Renderer
-from .tilemap import TileMap
+from .tilemap import Tilemap
 from .camera import Camera
 
 pygame.init()
@@ -14,7 +14,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.animations = Animation_Handler()
-        self.tilemap = TileMap('data/levels/level1.json')
+        self.tilemap = Tilemap('data/levels/level1.json')
         self.entities = Entity_Manager(self)
         self.renderer = Renderer(self)
         self.camera = Camera()
