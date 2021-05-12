@@ -14,7 +14,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.animations = Animation_Handler()
-        self.tilemap = Tilemap('data/levels/level1.json')
+        self.tilemap = Tilemap('data/saved.json')
         self.entities = Entity_Manager(self)
         self.renderer = Renderer(self)
         self.camera = Camera()
@@ -56,6 +56,8 @@ class Game:
                     self.entities.mario.directions['left'] = True
                 if event.key == pygame.K_d:
                     self.entities.mario.directions['right'] = True
+                if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                    self.entities.mario.running = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w:
@@ -65,6 +67,8 @@ class Game:
                     self.entities.mario.directions['left'] = False
                 if event.key == pygame.K_d:
                     self.entities.mario.directions['right'] = False
+                if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
+                    self.entities.mario.running = False
 
     def main_loop(self):
         while True:

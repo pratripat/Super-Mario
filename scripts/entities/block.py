@@ -17,7 +17,6 @@ class Block:
 
         self.offset_counter += 0.1
         self.offset = math.sin(self.offset_counter)*10
-        self.hits -= 1
 
         if self.offset <= 0:
             self.updating_offset = False
@@ -29,17 +28,19 @@ class Block:
 
     def up_collision(self, player, function):
         if player.velocity[1] < 0:
-            player.position[1] += player.velocity[1]
-            if rect_rect_collision(player.rect, self.rect):
+            rect = player.rect.copy()
+            rect[1] += player.velocity[1]
+            if rect_rect_collision(rect, self.rect):
                 function()
-                player.position[1] -= player.velocity[1]
+                rect[1] -= player.velocity[1]
                 player.velocity[1] = 0
 
                 if self.hits > 0:
+                    self.hits -= 1
                     self.updating_offset = True
-
                 return
-            player.position[1] -= player.velocity[1]
+
+            rect[1] -= player.velocity[1]
 
     @property
     def rect(self):

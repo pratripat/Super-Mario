@@ -1,0 +1,10 @@
+{
+  "small_mario": {
+    "offset": [2,2],
+    "size": [12,14]
+  },
+  "mario": {
+    "offset": [2,2],
+    "size": [12,30]
+  }
+}
