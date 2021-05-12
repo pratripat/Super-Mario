@@ -5,20 +5,19 @@ class Mushroom(Entity):
     def __init__(self, game, position, type):
         super().__init__(game.animations, type, position, 'moving')
         self.game = game
-        self.type = type
         self.velocity[0] = 1
-        self.static_timer = 0
+        self.movement_timer = 0
         self.used = False
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll)
 
     def update(self):
-        if self.static_timer == 0:
+        if self.movement_timer == 0:
             self.movement()
             self.move(self.game.entities.get_colliding_entities(), self.game.dt)
         else:
-            self.static_timer -= 1
+            self.movement_timer -= 1
             self.rect[1] -= 1
 
         super().update(self.game.dt)

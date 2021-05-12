@@ -15,7 +15,7 @@ class Block:
         if not self.updating_offset:
             return
 
-        self.offset_counter += 0.1
+        self.offset_counter += 0.2
         self.offset = math.sin(self.offset_counter)*10
 
         if self.offset <= 0:
