@@ -3,7 +3,7 @@ import pygame
 
 class Mushroom(Entity):
     def __init__(self, game, position, type):
-        super().__init__(game.animations, type, position, False, 'moving')
+        super().__init__(game.animations, type, position, 'moving')
         self.game = game
         self.type = type
         self.velocity[0] = 1
@@ -19,7 +19,7 @@ class Mushroom(Entity):
             self.move(self.game.entities.get_colliding_entities(), self.game.dt)
         else:
             self.static_timer -= 1
-            self.position[1] -= 1
+            self.rect[1] -= 1
 
         super().update(self.game.dt)
 

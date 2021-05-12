@@ -3,12 +3,15 @@ from ..entity import Entity
 
 class Mario(Entity):
     def __init__(self, game):
-        super().__init__(game.animations, 'small_mario', [500,100], False, 'idle')
+        super().__init__(game.animations, 'small_mario', [500,100], 'idle')
         self.game = game
         self.airtimer = 0
-        self.speed = 5
+        self.speed = 4
+        self.running = False
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
+
+        self.load_collision_rect()
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll)
@@ -19,18 +22,25 @@ class Mario(Entity):
         self.update(self.game.dt)
 
     def movement(self):
+        speed = self.speed
+        acceleration = 0.1
+
+        if self.running:
+            speed = 7
+            acceleration = 0.2
+
         animation_state = 'idle'
 
         if self.collisions['bottom']:
             self.airtimer = 0
             self.velocity[1] = 0
         elif self.airtimer == 0:
-            self.airtimer = 10
+            self.airtimer = 8
 
         if self.directions['left'] and not self.directions['right']:
             animation_state = 'run'
-            self.velocity[0] -= 0.1
-            self.velocity[0] = max(-self.speed, self.velocity[0])
+            self.velocity[0] -= acceleration
+            self.velocity[0] = max(-speed, self.velocity[0])
             self.flip(True)
 
             if self.velocity[0] >= 0:
@@ -38,8 +48,8 @@ class Mario(Entity):
 
         if self.directions['right'] and not self.directions['left']:
             animation_state = 'run'
-            self.velocity[0] += 0.1
-            self.velocity[0] = min(self.speed, self.velocity[0])
+            self.velocity[0] += acceleration
+            self.velocity[0] = min(speed, self.velocity[0])
             self.flip(False)
 
             if self.velocity[0] <= 0:
@@ -57,8 +67,8 @@ class Mario(Entity):
 
         #Jump
         elif self.directions['up']:
-            if self.airtimer < 10:
-                self.velocity[1] -= 3.7*self.airtimer/10
+            if self.airtimer < 8:
+                self.velocity[1] -= 2
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
@@ -74,5 +84,16 @@ class Mario(Entity):
         self.set_animation(animation_state)
 
     def change_state(self, type):
-        mario_states = json.load(open('data/configs/mario_states.json', 'r'))
-        self.id = mario_states[type]
+        states = json.load(open('data/configs/mario_states.json', 'r'))
+        self.id = states[type]
+
+        self.load_collision_rect()
+
+    def load_collision_rect(self):
+        collision_rects = json.load(open('data/configs/mario_collision_boxes.json', 'r'))
+        collision_rect = collision_rects[self.id]
+        offset = [collision_rect['offset'][0]*self.scale, collision_rect['offset'][1]*self.scale]
+        size = collision_rect['size']
+
+        self.rect = pygame.Rect(self.position[0]+offset[0], self.position[1]+offset[1], size[0]*self.scale, size[1]*self.scale)
+        self.offset = offset
