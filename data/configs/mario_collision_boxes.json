@@ -1,9 +1,16 @@
 {
   "small_mario": {
+    "start_offset": [0,0],
     "offset": [2,2],
     "size": [12,14]
   },
   "mario": {
+    "start_offset": [0,16],
+    "offset": [2,2],
+    "size": [12,30]
+  },
+  "fire_mario": {
+    "start_offset": [0,0],
     "offset": [2,2],
     "size": [12,30]
   }

@@ -21,6 +21,8 @@ class Game:
         self.camera.set_target(self.entities.mario)
         self.camera.set_movement(0.05)
 
+        self.paused = False
+
         pygame.mixer.music.load('data/music/main_theme.wav')
         pygame.mixer.music.play(-1)
 
