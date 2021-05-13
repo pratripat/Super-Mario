@@ -25,22 +25,21 @@ class Brick(Block):
             rect = player.rect.copy()
             rect[1] += player.velocity[1]
             if rect_rect_collision(rect, self.rect):
-                if player.id != 'small_mario':
-                    function()
-                else:
-                    self.hits += 1
-                    self.brick_bump_sfx.play()
-
-                rect[1] -= player.velocity[1]
-                player.velocity[1] = 0
-
                 if self.hits > 0:
                     self.hits -= 1
                     self.updating_offset = True
 
-                return
+                if player.id != 'small_mario':
+                    if self.hits == 0:
+                        function()
 
-            rect[1] -= player.velocity[1]
+                else:
+                    self.hits += 1
+                    self.brick_bump_sfx.play()
+
+                player.velocity[1] = 0
+
+                return
 
     def burst(self):
         self.brick_break_sfx.play()

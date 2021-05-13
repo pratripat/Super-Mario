@@ -28,6 +28,7 @@ class Group:
             filepath = filename.split('.png')[0].split('/')[-1]
 
             images = load_images_from_spritesheet(filename)
+            spritesheet = pygame.image.load(filename)
 
             if len(images) == 0:
                 images = [spritesheet]

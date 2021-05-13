@@ -19,7 +19,11 @@ class Tilemap:
             x, y = pos.split(';')
             pos = [int(float(x))*RES, int(float(y))*RES]
 
-            image = load_images_from_spritesheet('data/graphics/spritesheet/'+filepath+'.png')[index]
+            try:
+                image = load_images_from_spritesheet('data/graphics/spritesheet/'+filepath+'.png')[index]
+            except:
+                image = pygame.image.load('data/graphics/spritesheet/'+filepath+'.png').convert()
+
             image = pygame.transform.scale(image, (image.get_width()*scale, image.get_height()*scale))
 
             dimensions = image.get_size()

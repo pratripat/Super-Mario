@@ -2,12 +2,14 @@ from .entities.mario import Mario
 from .entities.question_block import Question_Block
 from .entities.power_up_block import Power_Up_Block
 from .entities.brick import Brick
+from .entities.goomba import Goomba
 
 class Entity_Manager:
     def __init__(self, game):
         self.game = game
         self.mario = Mario(game)
         self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, rect) for rect in self.game.tilemap.get_rects_with_id('brick')]
+        self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]
         self.items = []
         self.brick_pieces = []
 
@@ -16,6 +18,12 @@ class Entity_Manager:
 
         if self.game.paused:
             return
+
+        for enemy in self.enemies[:]:
+            enemy.update()
+
+            if enemy.remove:
+                self.enemies.remove(enemy)
 
         for question_block in self.blocks[:]:
             question_block.update()
@@ -28,20 +36,23 @@ class Entity_Manager:
             if piece.offscreen:
                 self.brick_pieces.remove(piece)
 
-        for mushroom in self.items[:]:
-            mushroom.update()
-            if mushroom.offscreen or mushroom.used:
-                self.items.remove(mushroom)
+        for item in self.items[:]:
+            item.update()
+            if item.far_from_mario or item.used:
+                self.items.remove(item)
 
     def render(self):
-        for mushroom in self.items:
-            mushroom.render()
+        for item in self.items:
+            item.render()
 
         for question_block in self.blocks:
             question_block.render()
 
         for piece in self.brick_pieces:
             piece.render()
+
+        for enemy in self.enemies:
+            enemy.render()
 
         self.mario.render()
 
