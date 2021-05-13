@@ -1,4 +1,5 @@
 {
+  "enemy": "small_mario",
   "super_mushroom": "mario",
   "fireflower": "fire_mario"
 }

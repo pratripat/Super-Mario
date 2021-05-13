@@ -32,15 +32,12 @@ class Block:
             rect[1] += player.velocity[1]
             if rect_rect_collision(rect, self.rect):
                 function()
-                rect[1] -= player.velocity[1]
                 player.velocity[1] = 0
 
                 if self.hits > 0:
                     self.hits -= 1
                     self.updating_offset = True
                 return
-
-            rect[1] -= player.velocity[1]
 
     @property
     def rect(self):

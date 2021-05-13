@@ -7,6 +7,7 @@ class Mushroom(Entity):
         self.game = game
         self.velocity[0] = 1
         self.movement_timer = 0
+        self.max_distance = 3696
         self.used = False
 
     def render(self):
@@ -43,3 +44,7 @@ class Mushroom(Entity):
             self.position[1] > self.game.tilemap.right or
             self.position[1] > self.game.tilemap.bottom
         )
+
+    @property
+    def far_from_mario(self):
+        return abs(self.game.entities.mario.position[0]-self.position[0]) > self.max_distance

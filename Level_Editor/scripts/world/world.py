@@ -139,14 +139,17 @@ class World:
                 image = pygame.transform.scale(image, dimensions)
 
             except Exception as e:
-                print('WORLD LOADING ERROR: ', e)
-                image = pygame.image.load(path).convert()
-                dimensions = [image.get_width()*int(scale), image.get_height()*int(scale)]
-                image.set_colorkey((0,0,0))
+                try:
+                    print('WORLD LOADING ERROR: ', e)
+                    image = pygame.image.load(path).convert()
+                    dimensions = [image.get_width()*int(scale), image.get_height()*int(scale)]
+                    image.set_colorkey((0,0,0))
 
-                offset = self.load_image_offset(id, dimensions, int(index), image)
+                    offset = self.load_image_offset(id, dimensions, int(index), image)
 
-                image = pygame.transform.scale(image, dimensions)
+                    image = pygame.transform.scale(image, dimensions)
+                except:
+                    print('WORLD IMAGE LOADING ERROR: ignored image with path', path)
 
             #Loads the group name
             FILEPATH = 'data/configs/groups'
