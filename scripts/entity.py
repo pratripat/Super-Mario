@@ -20,6 +20,8 @@ class Entity:
     def render(self, surface, scroll=[0,0], colorkey=None):
         self.current_animation.render(surface, (self.position[0]-scroll[0], self.position[1]-scroll[1]), self.flipped, colorkey)
 
+        # pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
+
     #Updates the animation
     def update(self, dt):
         self.current_animation.run(dt)
@@ -75,6 +77,10 @@ class Entity:
             self.current_animation = self.animations.get_animation(animation)
             self.current_animation_id = animation
 
+    def reset_rect(self):
+        self.rect = pygame.Rect(*self.position, *self.current_animation.image.get_size())
+        self.offset = [0,0]
+
     #FLips the entity horizontally (when rendering only)
     def flip(self, bool):
         self.flipped = bool
@@ -87,6 +93,7 @@ class Entity:
 
     def get_size(self):
         return self.rect.size
+
 
     @property
     def position(self):

@@ -4,6 +4,7 @@ from ..funcs import *
 class Enemy(Entity):
     def __init__(self, game, position, type, animation_id):
         super().__init__(game.animations, type, position, animation_id)
+        self.velocity[0] = -1
         self.game = game
         self.dead = False
         self.remove = False
@@ -11,7 +12,7 @@ class Enemy(Entity):
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll)
 
-    def update(self):
+    def update(self, function=None):
         super().update(self.game.dt)
 
         if self.dead:
@@ -22,11 +23,7 @@ class Enemy(Entity):
         self.movement()
         self.move(self.game.entities.get_colliding_entities(), self.game.dt)
 
-        if rect_rect_collision(self.rect, self.game.entities.mario.rect):
-            self.game.entities.mario.change_state('enemy')
-
-    def stomp(self, function=None):
-        if self.game.entities.mario.velocity[1] > 0:
+        if self.game.entities.mario.directions['down'] and not self.game.entities.mario.collisions['bottom']:
             rect = self.game.entities.mario.rect.copy()
             rect[1] += self.game.entities.mario.velocity[1]
 
@@ -50,3 +47,10 @@ class Enemy(Entity):
             self.flip(False)
 
         self.velocity[1] += 1
+
+    @property
+    def on_screen(self):
+        return (
+            0 < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
+            0 < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
+        )    

@@ -20,7 +20,7 @@ class FireFlower(Entity):
         super().update(self.game.dt)
 
         if rect_rect_collision(self.rect, self.game.entities.mario.rect):
-            self.game.entities.mario.change_state(self.id)
+            self.game.entities.mario.change_state('power_up')
             self.used = True
 
     @property

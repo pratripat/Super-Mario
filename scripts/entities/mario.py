@@ -1,4 +1,5 @@
 import pygame, json
+from ..funcs import *
 from ..entity import Entity
 
 class Mario(Entity):
@@ -42,6 +43,31 @@ class Mario(Entity):
 
         self.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
         self.movement()
+        self.hits(self.game.entities.get_enemies())
+
+    def hits(self, enemies):
+        for enemy in enemies:
+            if self.directions['down'] and not self.collisions['bottom']:
+                continue
+
+            rect = self.rect.copy()
+            rect2 = enemy.rect.copy()
+            if enemy.current_animation_id == 'koopa_idle':
+                rect[0] += self.velocity[0]
+                rect[1] += self.velocity[1]
+
+                if rect_rect_collision(rect, enemy.rect):
+                    enemy.roll()
+                    return
+
+                rect[0] -= self.velocity[0]
+                rect[1] -= self.velocity[1]
+
+            rect[0] += self.velocity[0]
+
+            if rect_rect_collision(rect, enemy.rect):
+                self.change_state('enemy')
+                return
 
     def movement(self):
         speed = self.speed
@@ -110,7 +136,7 @@ class Mario(Entity):
 
     def change_state(self, type):
         states = json.load(open('data/configs/mario_states.json', 'r'))
-        current_animation_id = f'{self.id}_to_{states[type]}'
+        current_animation_id = f'{self.id}_to_{states[type][self.id]}'
 
         if type != 'enemy':
             self.power_up_sfx.play()
@@ -127,12 +153,12 @@ class Mario(Entity):
 
             self.game.paused = True
 
-        self.id = states[type]
+        self.id = states[type][self.id]
 
         self.load_collision_rect()
 
     def load_collision_rect(self):
-        collision_rects = json.load(open('data/configs/mario_collision_boxes.json', 'r'))
+        collision_rects = json.load(open('data/configs/collision_boxes/mario.json', 'r'))
         collision_rect = collision_rects[self.id]
         offset = [collision_rect['offset'][0]*self.scale, collision_rect['offset'][1]*self.scale]
         start_offset = [collision_rect['start_offset'][0]*self.scale, collision_rect['start_offset'][1]*self.scale]
