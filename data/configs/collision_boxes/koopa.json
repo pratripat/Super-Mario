@@ -1,0 +1,17 @@
+{
+  "koopa_moving": {
+    "start_offset": [0,0],
+    "offset": [2,10],
+    "size": [12,14]
+  },
+  "koopa_idle": {
+    "start_offset": [0,0],
+    "offset": [2,0],
+    "size": [12,14]
+  },
+  "koopa_rolling": {
+    "start_offset": [0,0],
+    "offset": [2,0],
+    "size": [12,14]
+  }
+}

@@ -1,5 +1,12 @@
 {
-  "enemy": "small_mario",
-  "super_mushroom": "mario",
-  "fireflower": "fire_mario"
+  "enemy": {
+    "small_mario": "small_mario",
+    "mario": "small_mario",
+    "fire_mario": "small_mario"
+  },
+  "power_up": {
+    "small_mario": "mario",
+    "mario": "fire_mario",
+    "fire_mario": "fire_mario"
+  }
 }

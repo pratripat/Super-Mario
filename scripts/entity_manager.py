@@ -3,13 +3,15 @@ from .entities.question_block import Question_Block
 from .entities.power_up_block import Power_Up_Block
 from .entities.brick import Brick
 from .entities.goomba import Goomba
+from .entities.koopa import Koopa
+import pygame
 
 class Entity_Manager:
     def __init__(self, game):
         self.game = game
         self.mario = Mario(game)
         self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, rect) for rect in self.game.tilemap.get_rects_with_id('brick')]
-        self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]
+        self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
         self.items = []
         self.brick_pieces = []
 
@@ -64,3 +66,6 @@ class Entity_Manager:
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('ground'))
 
         return colliding_blocks
+
+    def get_enemies(self):
+        return self.enemies

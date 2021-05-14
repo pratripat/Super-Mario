@@ -9,5 +9,5 @@ class Super_Mushroom(Mushroom):
         super().update()
 
         if rect_rect_collision(self.rect, self.game.entities.mario.rect):
-            self.game.entities.mario.change_state(self.id)
+            self.game.entities.mario.change_state('power_up')
             self.used = True
