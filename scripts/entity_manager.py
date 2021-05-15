@@ -64,6 +64,7 @@ class Entity_Manager:
             colliding_blocks.append(block.rect)
 
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('ground'))
+        colliding_blocks.extend(self.game.tilemap.get_rects_with_id('pipes'))
 
         return colliding_blocks
 

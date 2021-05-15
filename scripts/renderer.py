@@ -6,7 +6,7 @@ class Renderer:
         self.game = game
 
     def render(self):
-        visible_tiles = ['ground']
+        visible_tiles = ['ground', 'pipes']
         self.game.screen.fill((107,139,255))
 
         for entity in self.game.tilemap.entities:
