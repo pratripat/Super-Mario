@@ -11,6 +11,7 @@ class Mario(Entity):
         self.running = False
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
+        self.crouching = False
         self.flickering = False
         self.flicker_timer = 0
 
@@ -19,7 +20,7 @@ class Mario(Entity):
         self.small_mario_jump_sfx = pygame.mixer.Sound('data/sfx/small_mario_jump.wav')
         self.mario_jump_sfx = pygame.mixer.Sound('data/sfx/mario_jump.wav')
 
-        self.load_collision_rect()
+        self.load_collision_rect('small_mario')
 
     def render(self):
         if self.flickering and self.flicker_timer%3 == 0:
@@ -85,7 +86,7 @@ class Mario(Entity):
         elif self.airtimer == 0:
             self.airtimer = 10
 
-        if self.directions['left'] and not self.directions['right']:
+        if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
             self.velocity[0] -= acceleration
             self.velocity[0] = max(-speed, self.velocity[0])
@@ -94,7 +95,7 @@ class Mario(Entity):
             if self.velocity[0] >= 0:
                 animation_state = 'slide'
 
-        if self.directions['right'] and not self.directions['left']:
+        if self.directions['right'] and not self.directions['left'] and not self.crouching:
             animation_state = 'run'
             self.velocity[0] += acceleration
             self.velocity[0] = min(speed, self.velocity[0])
@@ -132,6 +133,9 @@ class Mario(Entity):
         if self.airtimer > 3:
             animation_state = 'jump'
 
+        if self.crouching:
+            animation_state = 'crouching'
+
         self.set_animation(animation_state)
 
     def change_state(self, type):
@@ -155,11 +159,11 @@ class Mario(Entity):
 
         self.id = states[type][self.id]
 
-        self.load_collision_rect()
+        self.load_collision_rect(self.id)
 
-    def load_collision_rect(self):
+    def load_collision_rect(self, id):
         collision_rects = json.load(open('data/configs/collision_boxes/mario.json', 'r'))
-        collision_rect = collision_rects[self.id]
+        collision_rect = collision_rects[id]
         offset = [collision_rect['offset'][0]*self.scale, collision_rect['offset'][1]*self.scale]
         start_offset = [collision_rect['start_offset'][0]*self.scale, collision_rect['start_offset'][1]*self.scale]
         size = collision_rect['size']

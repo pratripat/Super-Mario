@@ -4,6 +4,7 @@ from .animation_handler import Animation_Handler
 from .renderer import Renderer
 from .tilemap import Tilemap
 from .camera import Camera
+from .pipe_guides import Pipe_Guides
 
 pygame.init()
 
@@ -15,6 +16,7 @@ class Game:
 
         self.animations = Animation_Handler()
         self.tilemap = Tilemap('data/saved.json')
+        self.pipe_guides = Pipe_Guides(self)
         self.entities = Entity_Manager(self)
         self.renderer = Renderer(self)
         self.camera = Camera()
@@ -51,24 +53,28 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = True
                     self.entities.mario.directions['down'] = False
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = True
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     self.entities.mario.directions['right'] = True
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    self.entities.mario.crouching = True
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     self.entities.mario.running = True
 
             if event.type == pygame.KEYUP:
-                if event.key == pygame.K_w:
+                if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = False
                     self.entities.mario.directions['down'] = True
-                if event.key == pygame.K_a:
+                if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = False
-                if event.key == pygame.K_d:
+                if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
                     self.entities.mario.directions['right'] = False
+                if event.key == pygame.K_s or event.key == pygame.K_DOWN:
+                    self.entities.mario.crouching = False
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     self.entities.mario.running = False
 

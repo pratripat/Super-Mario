@@ -1,9 +1,9 @@
 import pygame, json, sys
 from scripts.funcs import *
 
-RES = 48
-
 class Tilemap:
+    RES = 48
+
     def __init__(self, filename):
         self.filename = filename
         self.entities = []
@@ -15,9 +15,10 @@ class Tilemap:
         for position in data:
             pos, layer = position.split(':')
             id, filepath, index, scale = data[position]
+            layer = int(layer)
 
             x, y = pos.split(';')
-            pos = [int(float(x))*RES, int(float(y))*RES]
+            pos = [int(float(x))*self.RES, int(float(y))*self.RES]
 
             try:
                 image = load_images_from_spritesheet('data/graphics/spritesheet/'+filepath+'.png')[index]
@@ -29,6 +30,8 @@ class Tilemap:
             dimensions = image.get_size()
 
             offset = self.load_offset(id, index)
+            offset[0] *= scale
+            offset[1] *= scale
 
             self.entities.append({
                 'position': pos,
@@ -52,7 +55,7 @@ class Tilemap:
     #Loads offset with id and index
     def load_offset(self, id, index):
         try:
-            offset_data = json.load(open(f'data/config/offsets/{id}.json', 'r'))
+            offset_data = json.load(open(f'data/configs/offsets/{id}_offset.json', 'r'))
             offset = offset_data[str(index)]
             return offset
         except:
@@ -72,6 +75,16 @@ class Tilemap:
                 colliding_rects.append(entity_rect)
 
         return colliding_rects
+
+    def get_tiles_with_position(self, id, position, layer=None):
+        entities = []
+        for entity in self.entities:
+            if entity['id'] == id:
+                if entity['position'] == position:
+                    if layer != None and entity['layer'] != layer:
+                        continue
+                    entities.append(entity)
+        return entities
 
     #Returns entities with the same id and layer
     def get_tiles_with_id(self, id, layer=None):
