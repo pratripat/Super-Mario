@@ -68,7 +68,7 @@ class Group:
                 y += image.get_height()+10
 
                 if y > self.editor.screen.get_height():
-                    y = 100
+                    y = 80
                     x += image.get_width()+10
 
     #Renders all the images in the group

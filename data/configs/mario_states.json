@@ -1,6 +1,6 @@
 {
   "enemy": {
-    "small_mario": "small_mario",
+    "small_mario": "none",
     "mario": "small_mario",
     "fire_mario": "small_mario"
   },

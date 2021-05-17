@@ -9,6 +9,7 @@ class Enemy(Entity):
         self.dead = False
         self.remove = False
         self.active = False
+        self.max_distance = 816
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll)
@@ -20,6 +21,12 @@ class Enemy(Entity):
             return
 
         super().update(self.game.dt)
+
+        for enemy in self.game.entities.enemies:
+            if enemy != self and enemy.id == 'koopa' and enemy.current_animation_id == 'koopa_rolling':
+                if rect_rect_collision(enemy.rect, self.rect):
+                    self.remove = True
+                    return
 
         if self.dead:
             if int(self.current_animation.frame) == self.current_animation.animation_data.duration():
@@ -63,3 +70,7 @@ class Enemy(Entity):
             0 < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
             0 < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
         )
+
+    @property
+    def far_from_mario(self):
+        return self.game.entities.mario.position[0]-self.position[0] > self.max_distance
