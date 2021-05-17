@@ -19,11 +19,11 @@ class Entity_Manager:
         self.brick_pieces = []
 
     def run(self):
-        self.mario.run()
-
         self.flagpole.run()
 
-        if self.game.paused:
+        self.mario.run()
+
+        if self.game.paused or self.game.level_finished:
             return
 
         for enemy in self.enemies[:]:

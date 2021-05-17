@@ -13,8 +13,12 @@ class Group:
 
     #Loads all the images
     def load(self):
+
         y = 80
         for filename in os.listdir(self.path):
+            if self.name == 'end':
+                print(filename)
+
             x = 20
 
             data = json.load(open(self.path+'/'+filename, 'r'))
@@ -64,7 +68,7 @@ class Group:
                 y += image.get_height()+10
 
                 if y > self.editor.screen.get_height():
-                    y = 80
+                    y = 100
                     x += image.get_width()+10
 
     #Renders all the images in the group

@@ -35,6 +35,9 @@ class Mario(Entity):
     def run(self):
         self.update(self.game.dt)
 
+        if self.game.level_finished:
+            return
+
         if int(self.current_animation.frame) == self.current_animation.animation_data.duration():
             self.game.paused = False
             self.flicker_timer = 0
