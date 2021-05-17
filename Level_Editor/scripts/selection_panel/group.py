@@ -13,8 +13,12 @@ class Group:
 
     #Loads all the images
     def load(self):
+
         y = 80
         for filename in os.listdir(self.path):
+            if self.name == 'end':
+                print(filename)
+
             x = 20
 
             data = json.load(open(self.path+'/'+filename, 'r'))

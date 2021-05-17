@@ -1,6 +1,7 @@
 import pygame, json
 from ..funcs import *
 from ..entity import Entity
+from .fireball import Fireball
 
 class Mario(Entity):
     def __init__(self, game, rect):
@@ -14,6 +15,7 @@ class Mario(Entity):
         self.crouching = False
         self.flickering = False
         self.pipe_transition = False
+        self.dead = False
         self.flicker_timer = 0
         self.pipe_transition_timer = 0
         self.pipe_transition_velocity = [0,0]
@@ -23,8 +25,10 @@ class Mario(Entity):
         self.damage_sfx = pygame.mixer.Sound('data/sfx/damage.wav')
         self.small_mario_jump_sfx = pygame.mixer.Sound('data/sfx/small_mario_jump.wav')
         self.mario_jump_sfx = pygame.mixer.Sound('data/sfx/mario_jump.wav')
+        self.fireball_sfx = pygame.mixer.Sound('data/sfx/fireball.wav')
+        self.pipe_music_sfx = pygame.mixer.Sound('data/sfx/damage.wav')
 
-        self.load_collision_rect('small_mario')
+        self.load_collision_rect(self.id)
 
     def render(self):
         if self.flickering and self.flicker_timer%3 == 0:
@@ -34,6 +38,13 @@ class Mario(Entity):
 
     def run(self):
         self.update(self.game.dt)
+
+        if self.dead:
+            self.game.load_level()
+            return
+
+        if self.game.level_finished:
+            return
 
         if int(self.current_animation.frame) == self.current_animation.animation_data.duration():
             self.game.paused = False
@@ -67,11 +78,17 @@ class Mario(Entity):
         if self.game.paused:
             return
 
+        if self.rect[1] > self.game.tilemap.bottom:
+            self.dead = True
+
         self.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
         self.movement()
         self.hits(self.game.entities.get_enemies())
 
     def hits(self, enemies):
+        if self.flickering:
+            return
+
         for enemy in enemies:
             if self.directions['down'] and not self.collisions['bottom']:
                 continue
@@ -161,11 +178,18 @@ class Mario(Entity):
         if self.crouching:
             animation_state = 'crouching'
 
+        if self.current_animation_id.split('_')[-1] == 'shoot' and not int(self.current_animation.frame) == self.current_animation.animation_data.duration():
+            return
+
         self.set_animation(animation_state)
 
     def change_state(self, type):
         states = json.load(open('data/configs/mario_states.json', 'r'))
         current_animation_id = f'{self.id}_to_{states[type][self.id]}'
+
+        if states[type][self.id] == 'none':
+            self.dead = True
+            return
 
         if type != 'enemy':
             self.power_up_sfx.play()
@@ -197,6 +221,8 @@ class Mario(Entity):
         self.offset = offset
 
     def play_pipe_transition(self, end_position, direction1, direction2):
+        self.pipe_music_sfx.play()
+
         if direction1[0] > 0:
             self.pipe_transition_velocity[0] =  1
             animation_state = 'run'
@@ -213,6 +239,8 @@ class Mario(Entity):
             self.pipe_transition_velocity_2[0] = -1
         if direction2[1] > 0:
             self.pipe_transition_velocity_2[1] =  1
+        if direction2[1] < 0:
+            self.pipe_transition_velocity_2[1] = -1
 
         self.game.paused = True
         self.pipe_transition_timer = 96
@@ -221,6 +249,15 @@ class Mario(Entity):
         self.pipe_final_position[0] -= direction2[0]
         self.pipe_final_position[1] -= direction2[1]
         self.set_animation(animation_state)
+
+    def shoot_fireball(self):
+        if self.id != 'fire_mario':
+            return
+
+        fireball = Fireball(self.game, self.center, self.flipped)
+        self.game.entities.fireballs.append(fireball)
+        self.set_animation('shoot')
+        self.fireball_sfx.play()
 
     @property
     def jump_sfx(self):

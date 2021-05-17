@@ -15,18 +15,10 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.animations = Animation_Handler()
-        self.tilemap = Tilemap('data/saved.json')
-        self.pipe_guides = Pipe_Guides(self)
-        self.entities = Entity_Manager(self)
         self.renderer = Renderer(self)
         self.camera = Camera()
-        self.camera.set_target(self.entities.mario)
-        self.camera.set_movement(0.05)
 
-        self.paused = False
-
-        pygame.mixer.music.load('data/music/main_theme.wav')
-        pygame.mixer.music.play(-1)
+        self.load_level()
 
     @property
     def dt(self):
@@ -34,6 +26,23 @@ class Game:
             return 0
 
         return 1/self.clock.get_fps()
+
+    def load_level(self, level=1):
+        self.level = level
+
+        self.tilemap = Tilemap('data/saved.json')
+        self.pipe_guides = Pipe_Guides(self)
+        self.entities = Entity_Manager(self)
+
+        self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
+        self.camera.set_target(self.entities.mario)
+        self.camera.set_movement(0.05)
+
+        self.paused = False
+        self.level_finished = False
+
+        pygame.mixer.music.load('data/music/main_theme.wav')
+        pygame.mixer.music.play(-1)
 
     def run(self):
         self.clock.tick(80)
@@ -64,6 +73,7 @@ class Game:
                     self.entities.mario.crouching = True
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     self.entities.mario.running = True
+                    self.entities.mario.shoot_fireball()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:

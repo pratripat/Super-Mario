@@ -46,13 +46,16 @@ class Brick(Block):
         self.remove = True
 
         angle = -math.pi/1.3
+        n = 0
 
         for i in range(2):
-            self.game.entities.brick_pieces.append(Brick_Piece(self.game, list(self.rect.center), angle))
+            self.game.entities.brick_pieces.append(Brick_Piece(self.game, list(self.rect.center), angle, n))
             angle -= math.pi/4
+            n += 1
 
         angle = -math.pi/4
 
         for i in range(2):
-            self.game.entities.brick_pieces.append(Brick_Piece(self.game, list(self.rect.center), angle))
+            self.game.entities.brick_pieces.append(Brick_Piece(self.game, list(self.rect.center), angle, n))
             angle += math.pi/4
+            n += 1

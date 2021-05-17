@@ -17,19 +17,20 @@ class Entity_Manager:
         self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
         self.items = []
         self.brick_pieces = []
+        self.fireballs = []
 
     def run(self):
-        self.mario.run()
-
         self.flagpole.run()
 
-        if self.game.paused:
+        self.mario.run()
+
+        if self.game.paused or self.game.level_finished:
             return
 
         for enemy in self.enemies[:]:
             enemy.update()
 
-            if enemy.remove:
+            if enemy.remove or enemy.far_from_mario:
                 self.enemies.remove(enemy)
 
         for question_block in self.blocks[:]:
@@ -37,6 +38,11 @@ class Entity_Manager:
 
             if question_block.remove:
                 self.blocks.remove(question_block)
+
+        for fireball in self.fireballs[:]:
+            fireball.update()
+            if fireball.remove:
+                self.fireballs.remove(fireball)
 
         for piece in self.brick_pieces[:]:
             piece.update()
@@ -72,6 +78,9 @@ class Entity_Manager:
 
         for enemy in self.enemies:
             enemy.render()
+
+        for fireball in self.fireballs:
+            fireball.render()
 
         self.mario.render()
 
