@@ -7,9 +7,6 @@ class Goomba(Enemy):
         self.stomp_sfx = pygame.mixer.Sound('data/sfx/stomp.wav')
 
     def update(self):
-        if not self.on_screen:
-            return
-
         super().update(self.die)
 
     def die(self):
