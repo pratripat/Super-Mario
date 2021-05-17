@@ -77,6 +77,10 @@ class Entity:
             self.current_animation = self.animations.get_animation(animation)
             self.current_animation_id = animation
 
+    def set_position(self, position):
+        self.rect[0] = position[0] + self.offset[0]
+        self.rect[1] = position[1] + self.offset[1]
+
     def reset_rect(self):
         self.rect = pygame.Rect(*self.position, *self.current_animation.image.get_size())
         self.offset = [0,0]

@@ -42,13 +42,13 @@ class Editor:
         mouse_position = pygame.mouse.get_pos()
 
         if keys[pygame.K_w]:
-            self.world.scroll[1] -= 500 * self.dt
+            self.world.scroll[1] -= 700 * self.dt
         if keys[pygame.K_a]:
-            self.world.scroll[0] -= 500 * self.dt
+            self.world.scroll[0] -= 700 * self.dt
         if keys[pygame.K_s]:
-            self.world.scroll[1] += 500 * self.dt
+            self.world.scroll[1] += 700 * self.dt
         if keys[pygame.K_d]:
-            self.world.scroll[0] += 500 * self.dt
+            self.world.scroll[0] += 700 * self.dt
 
         if not self.selection_panel.is_mouse_hovering(mouse_position):
             self.world.run(mouse_clicks[0], mouse_position, self.selection_panel.get_current_selection())

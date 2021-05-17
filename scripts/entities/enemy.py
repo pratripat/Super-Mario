@@ -8,16 +8,25 @@ class Enemy(Entity):
         self.game = game
         self.dead = False
         self.remove = False
+        self.active = False
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll)
 
     def update(self, function=None):
+        if not self.active:
+            if self.on_screen:
+                self.active = True
+            return
+
         super().update(self.game.dt)
 
         if self.dead:
             if int(self.current_animation.frame) == self.current_animation.animation_data.duration():
                 self.remove = True
+            return
+
+        if self.game.paused:
             return
 
         self.movement()
@@ -53,4 +62,4 @@ class Enemy(Entity):
         return (
             0 < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
             0 < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
-        )    
+        )

@@ -8,9 +8,6 @@ class Koopa(Enemy):
         self.load_collision_rect()
 
     def update(self):
-        if not self.on_screen:
-            return
-
         super().update(self.stomped)
 
     def stomped(self):

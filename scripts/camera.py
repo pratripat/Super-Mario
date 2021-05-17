@@ -7,6 +7,7 @@ class Camera:
         self.movement = 1
         self.screen_shake = 0.001
         self.time = 0
+        self.stuck_bottom = True
 
     def update(self, surface, restrainments=None):
         if self.time == 0:
@@ -28,7 +29,10 @@ class Camera:
             if self.scroll[1] > restrainments[1][1]-surface.get_height():
                 self.scroll[1] = restrainments[1][1]-surface.get_height()
 
-            self.scroll[1] = restrainments[1][1]-surface.get_height()
+            if self.stuck_bottom:
+                self.scroll[1] = restrainments[1][1]-surface.get_height()
+            else:
+                self.scroll[1] = restrainments[1][0]
 
     def set_target(self, target):
         self.target = target

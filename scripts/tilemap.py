@@ -26,6 +26,7 @@ class Tilemap:
                 image = pygame.image.load('data/graphics/spritesheet/'+filepath+'.png').convert()
 
             image = pygame.transform.scale(image, (image.get_width()*scale, image.get_height()*scale))
+            image.set_colorkey((0,0,0))
 
             dimensions = image.get_size()
 

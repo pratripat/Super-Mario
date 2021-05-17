@@ -4,12 +4,15 @@ from .entities.power_up_block import Power_Up_Block
 from .entities.brick import Brick
 from .entities.goomba import Goomba
 from .entities.koopa import Koopa
+from .entities.flagpole import Flagpole
+from .funcs import *
 import pygame
 
 class Entity_Manager:
     def __init__(self, game):
         self.game = game
-        self.mario = Mario(game)
+        self.flagpole = Flagpole(game, self.game.tilemap.get_rects_with_id('flagpole')[0])
+        self.mario = Mario(game, self.game.tilemap.get_rects_with_id('mario')[0])
         self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, rect) for rect in self.game.tilemap.get_rects_with_id('brick')]
         self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
         self.items = []
@@ -17,6 +20,8 @@ class Entity_Manager:
 
     def run(self):
         self.mario.run()
+
+        self.flagpole.run()
 
         if self.game.paused:
             return
@@ -42,6 +47,18 @@ class Entity_Manager:
             item.update()
             if item.far_from_mario or item.used:
                 self.items.remove(item)
+
+        for (position, direction1, direction2), rect in self.game.pipe_guides.rects.items():
+            if rect_rect_collision(self.mario.rect, rect):
+                if direction1[1] > 0 and not self.mario.crouching:
+                    continue
+                if direction1[0] > 0 and not self.mario.velocity[0] > 0:
+                    continue
+                if direction1[0] < 0 and not self.mario.velocity[0] < 0:
+                    continue
+
+                self.mario.play_pipe_transition(position, direction1, direction2)
+                break
 
     def render(self):
         for item in self.items:

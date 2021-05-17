@@ -3,8 +3,8 @@ from ..funcs import *
 from ..entity import Entity
 
 class Mario(Entity):
-    def __init__(self, game):
-        super().__init__(game.animations, 'small_mario', [500,100], 'idle')
+    def __init__(self, game, rect):
+        super().__init__(game.animations, 'small_mario', list(rect.topleft), 'idle')
         self.game = game
         self.airtimer = 0
         self.speed = 5
@@ -13,7 +13,11 @@ class Mario(Entity):
         self.directions['down'] = True
         self.crouching = False
         self.flickering = False
+        self.pipe_transition = False
         self.flicker_timer = 0
+        self.pipe_transition_timer = 0
+        self.pipe_transition_velocity = [0,0]
+        self.pipe_transition_velocity_2 = [0,0]
 
         self.power_up_sfx = pygame.mixer.Sound('data/sfx/power_up.wav')
         self.damage_sfx = pygame.mixer.Sound('data/sfx/damage.wav')
@@ -35,6 +39,27 @@ class Mario(Entity):
             self.game.paused = False
             self.flicker_timer = 0
             self.flickering = False
+
+        if self.pipe_transition:
+            self.rect[0] += self.pipe_transition_velocity[0]
+            self.rect[1] += self.pipe_transition_velocity[1]
+
+            self.pipe_transition_timer -= 1
+
+            if self.pipe_transition_timer == 48:
+                self.set_position(self.pipe_final_position)
+                self.velocity = [0,0]
+                self.game.camera.scroll[0] = self.position[0]-self.game.screen.get_width()/2
+                self.game.camera.stuck_bottom = not self.game.camera.stuck_bottom
+                self.pipe_transition_velocity = self.pipe_transition_velocity_2
+
+            if self.pipe_transition_timer == 0:
+                self.game.paused = False
+                self.pipe_transition = False
+                self.pipe_transition_velocity = [0,0]
+                self.pipe_transition_velocity_2 = [0,0]
+
+            return
 
         if self.flickering:
             self.flicker_timer += 1
@@ -170,6 +195,32 @@ class Mario(Entity):
 
         self.rect = pygame.Rect(self.position[0]+offset[0]-start_offset[0], self.position[1]+offset[1]-start_offset[1], size[0]*self.scale, size[1]*self.scale)
         self.offset = offset
+
+    def play_pipe_transition(self, end_position, direction1, direction2):
+        if direction1[0] > 0:
+            self.pipe_transition_velocity[0] =  1
+            animation_state = 'run'
+        if direction1[0] < 0:
+            self.pipe_transition_velocity[0] = -1
+            animation_state = 'run'
+        if direction1[1] > 0:
+            self.pipe_transition_velocity[1] =  1
+            animation_state = 'crouching'
+
+        if direction2[0] > 0:
+            self.pipe_transition_velocity_2[0] =  1
+        if direction2[0] < 0:
+            self.pipe_transition_velocity_2[0] = -1
+        if direction2[1] > 0:
+            self.pipe_transition_velocity_2[1] =  1
+
+        self.game.paused = True
+        self.pipe_transition_timer = 96
+        self.pipe_transition = True
+        self.pipe_final_position = list(end_position)
+        self.pipe_final_position[0] -= direction2[0]
+        self.pipe_final_position[1] -= direction2[1]
+        self.set_animation(animation_state)
 
     @property
     def jump_sfx(self):
