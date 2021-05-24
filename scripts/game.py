@@ -47,7 +47,7 @@ class Game:
     def run(self):
         self.clock.tick(80)
 
-        self.camera.update(self.screen, [[self.tilemap.left, self.tilemap.right], [self.tilemap.top, self.tilemap.bottom]])
+        self.camera.update(self.screen, self.tilemap)
         self.entities.run()
 
         self.renderer.render()

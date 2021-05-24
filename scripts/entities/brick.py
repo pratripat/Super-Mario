@@ -4,19 +4,18 @@ from ..funcs import *
 import pygame, math
 
 class Brick(Block):
-    def __init__(self, game, rect):
+    def __init__(self, game, rect, index):
         super().__init__(rect, 'brick')
         self.game = game
-        self.animation = self.game.animations.get_animation('brick')
+        self.image = load_images_from_spritesheet('data/graphics/spritesheet/tiles.png')[index]
+        self.image = pygame.transform.scale(self.image, (self.image.get_width()*3, self.image.get_height()*3))
         self.brick_break_sfx = pygame.mixer.Sound('data/sfx/brick_break.wav')
         self.brick_bump_sfx = pygame.mixer.Sound('data/sfx/brick_bump.wav')
 
     def render(self):
-        self.animation.render(self.game.screen, [self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.offset-self.game.camera.scroll[1]])
+        self.game.screen.blit(self.image, [self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.offset-self.game.camera.scroll[1]])
 
     def update(self):
-        self.animation.run(self.game.dt)
-
         self.up_collision(self.game.entities.mario, self.burst)
         self.update_offset()
 
