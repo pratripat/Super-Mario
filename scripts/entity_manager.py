@@ -13,7 +13,7 @@ class Entity_Manager:
         self.game = game
         self.flagpole = Flagpole(game, self.game.tilemap.get_rects_with_id('flagpole')[0])
         self.mario = Mario(game, self.game.tilemap.get_rects_with_id('mario')[0])
-        self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, rect) for rect in self.game.tilemap.get_rects_with_id('brick')]
+        self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
         self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
         self.items = []
         self.brick_pieces = []
@@ -82,12 +82,20 @@ class Entity_Manager:
         for fireball in self.fireballs:
             fireball.render()
 
+        self.flagpole.render()
+
         self.mario.render()
 
-    def get_colliding_entities(self):
+    def get_colliding_entities(self, entity=None, enemies=True):
         colliding_blocks = []
         for block in self.blocks:
             colliding_blocks.append(block.rect)
+
+        if enemies:
+            for enemy in self.enemies:
+                if entity == enemy:
+                    continue
+                colliding_blocks.append(enemy.rect)
 
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('ground'))
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('pipes'))

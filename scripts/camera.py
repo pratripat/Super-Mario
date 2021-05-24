@@ -9,7 +9,7 @@ class Camera:
         self.time = 0
         self.stuck_bottom = True
 
-    def update(self, surface, restrainments=None):
+    def update(self, surface, tilemap=None):
         if self.time == 0:
             self.screen_shake = 0
 
@@ -19,20 +19,22 @@ class Camera:
         if self.time > 0:
             self.time -= 1
 
-        if restrainments:
-            if self.scroll[0] < restrainments[0][0]:
-                self.scroll[0] = restrainments[0][0]
-            if self.scroll[0] > restrainments[0][1]-surface.get_width():
-                self.scroll[0] = restrainments[0][1]-surface.get_width()
-            if self.scroll[1] < restrainments[1][0]:
-                self.scroll[1] = restrainments[1][0]
-            if self.scroll[1] > restrainments[1][1]-surface.get_height():
-                self.scroll[1] = restrainments[1][1]-surface.get_height()
+        if tilemap:
+            if self.scroll[0] < tilemap.left:
+                self.scroll[0] = tilemap.left
+            if self.scroll[0] > tilemap.right-surface.get_width():
+                self.scroll[0] = tilemap.right-surface.get_width()
+            if self.scroll[1] < tilemap.top:
+                self.scroll[1] = tilemap.top
+            if self.scroll[1] > tilemap.bottom-surface.get_height():
+                self.scroll[1] = tilemap.bottom-surface.get_height()
 
             if self.stuck_bottom:
-                self.scroll[1] = restrainments[1][1]-surface.get_height()
+                self.scroll[1] = tilemap.bottom-surface.get_height()
             else:
-                self.scroll[1] = restrainments[1][0]
+                self.scroll[1] = tilemap.top
+
+        tilemap.left = self.scroll[0]
 
     def set_target(self, target):
         self.target = target

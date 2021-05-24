@@ -17,7 +17,7 @@ class Fireball(Entity):
 
     def update(self):
         super().update(self.game.dt)
-        self.move(self.game.entities.get_colliding_entities(), self.game.dt)
+        self.move(self.game.entities.get_colliding_entities(enemies=False), self.game.dt)
         self.movement()
         self.hits()
 

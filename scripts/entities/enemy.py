@@ -37,7 +37,7 @@ class Enemy(Entity):
             return
 
         self.movement()
-        self.move(self.game.entities.get_colliding_entities(), self.game.dt)
+        self.move(self.game.entities.get_colliding_entities(self), self.game.dt)
 
         if self.game.entities.mario.directions['down'] and not self.game.entities.mario.collisions['bottom']:
             rect = self.game.entities.mario.rect.copy()

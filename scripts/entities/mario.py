@@ -17,6 +17,7 @@ class Mario(Entity):
         self.pipe_transition = False
         self.dead = False
         self.flicker_timer = 0
+        self.invincible_timer = 0
         self.pipe_transition_timer = 0
         self.pipe_transition_velocity = [0,0]
         self.pipe_transition_velocity_2 = [0,0]
@@ -31,7 +32,7 @@ class Mario(Entity):
         self.load_collision_rect(self.id)
 
     def render(self):
-        if self.flickering and self.flicker_timer%3 == 0:
+        if self.invincible_timer > 0 and self.invincible_timer%3 == 0:
             return
 
         super().render(self.game.screen, self.game.camera.scroll)
@@ -40,7 +41,12 @@ class Mario(Entity):
         self.update(self.game.dt)
 
         if self.dead:
-            self.game.load_level()
+            if not pygame.mixer.music.get_busy():
+                self.game.load_level()
+
+            self.rect[1] += self.velocity[1]
+            self.velocity[1] += 0.25
+
             return
 
         if self.game.level_finished:
@@ -75,22 +81,28 @@ class Mario(Entity):
         if self.flickering:
             self.flicker_timer += 1
 
+        if self.invincible_timer > 0:
+            self.invincible_timer -= 1
+
         if self.game.paused:
             return
 
         if self.rect[1] > self.game.tilemap.bottom:
-            self.dead = True
+            self.die(False)
 
         self.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
         self.movement()
         self.hits(self.game.entities.get_enemies())
 
     def hits(self, enemies):
-        if self.flickering:
+        if int(self.invincible_timer) > 0:
             return
 
         for enemy in enemies:
             if self.directions['down'] and not self.collisions['bottom']:
+                return
+
+            if enemy.dead:
                 continue
 
             rect = self.rect.copy()
@@ -114,11 +126,9 @@ class Mario(Entity):
 
     def movement(self):
         speed = self.speed
-        acceleration = 0.1
 
         if self.running:
             speed = 8
-            acceleration = 0.2
 
         animation_state = 'idle'
 
@@ -130,7 +140,7 @@ class Mario(Entity):
 
         if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
-            self.velocity[0] -= acceleration
+            self.velocity[0] -= 0.1
             self.velocity[0] = max(-speed, self.velocity[0])
             self.flip(True)
 
@@ -139,7 +149,7 @@ class Mario(Entity):
 
         if self.directions['right'] and not self.directions['left'] and not self.crouching:
             animation_state = 'run'
-            self.velocity[0] += acceleration
+            self.velocity[0] += 0.1
             self.velocity[0] = min(speed, self.velocity[0])
             self.flip(False)
 
@@ -188,7 +198,7 @@ class Mario(Entity):
         current_animation_id = f'{self.id}_to_{states[type][self.id]}'
 
         if states[type][self.id] == 'none':
-            self.dead = True
+            self.die()
             return
 
         if type != 'enemy':
@@ -199,6 +209,7 @@ class Mario(Entity):
 
             self.damage_sfx.play()
             self.flickering = True
+            self.invincible_timer = 150
 
         if current_animation_id in self.animations.animations:
             self.current_animation_id = current_animation_id
@@ -221,6 +232,9 @@ class Mario(Entity):
         self.offset = offset
 
     def play_pipe_transition(self, end_position, direction1, direction2):
+        if self.pipe_transition:
+            return
+
         self.pipe_music_sfx.play()
 
         if direction1[0] > 0:
@@ -258,6 +272,15 @@ class Mario(Entity):
         self.game.entities.fireballs.append(fireball)
         self.set_animation('shoot')
         self.fireball_sfx.play()
+
+    def die(self, jump=True):
+        self.dead = True
+        self.set_animation('fall')
+        pygame.mixer.music.load('data/music/death.wav')
+        pygame.mixer.music.play()
+
+        if jump:
+            self.velocity[1] = -5
 
     @property
     def jump_sfx(self):
