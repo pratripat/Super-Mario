@@ -17,8 +17,8 @@ class Entity:
             self.rect = pygame.Rect(*position, *self.current_animation.image.get_size())
             self.offset = [0,0]
 
-    def render(self, surface, scroll=[0,0], colorkey=None):
-        self.current_animation.render(surface, (self.position[0]-scroll[0], self.position[1]-scroll[1]), self.flipped, colorkey)
+    def render(self, surface, scroll=[0,0], colorkey=None, vertical_flip=False):
+        self.current_animation.render(surface, (self.position[0]-scroll[0], self.position[1]-scroll[1]), [self.flipped, vertical_flip], colorkey)
 
         # pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
 

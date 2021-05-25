@@ -96,11 +96,10 @@ class Animation:
                 break
 
     #Renders the current image
-    def render(self, surface, position, flipped=False, colorkey=(0,0,0)):
+    def render(self, surface, position, flipped=[False, False], colorkey=(0,0,0)):
         offset = [0,0]
         image = self.image
-        if flipped:
-            image = pygame.transform.flip(self.image, True, False)
+        image = pygame.transform.flip(self.image, *flipped)
         if colorkey:
             image.set_colorkey(colorkey)
 

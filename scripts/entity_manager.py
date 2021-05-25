@@ -86,7 +86,7 @@ class Entity_Manager:
 
         self.mario.render()
 
-    def get_colliding_entities(self, entity=None, enemies=True):
+    def get_colliding_entities(self, entity=None, enemies=False):
         colliding_blocks = []
         for block in self.blocks:
             colliding_blocks.append(block.rect)
