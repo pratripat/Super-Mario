@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, json
 from .entity_manager import Entity_Manager
 from .animation_handler import Animation_Handler
 from .renderer import Renderer
@@ -27,10 +27,11 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=1):
+    def load_level(self, level=0):
         self.level = level
 
-        self.tilemap = Tilemap('data/saved.json')
+        level = json.load(open('data/levels/level_order.json', 'r'))[level]
+        self.tilemap = Tilemap(f'data/levels/{level}.json')
         self.pipe_guides = Pipe_Guides(self)
         self.entities = Entity_Manager(self)
 

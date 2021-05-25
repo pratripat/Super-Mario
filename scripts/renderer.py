@@ -6,12 +6,12 @@ class Renderer:
         self.game = game
 
     def render(self):
-        visible_tiles = ['ground', 'flagpole', 'castle']
-        self.game.screen.fill((107,139,255))
+        visible_tiles = ['background', 'ground', 'castle']
 
+        self.game.screen.fill((0,0,0))
         self.render_tiles_with_id(visible_tiles)
         self.game.entities.render()
-        self.render_tiles_with_id(['pipes', 'castle_half'])
+        self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
 
         pygame.display.update()
 
