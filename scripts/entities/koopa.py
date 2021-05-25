@@ -8,7 +8,7 @@ class Koopa(Enemy):
         self.load_collision_rect()
 
     def update(self):
-        super().update(self.stomped)
+        super().update(self.stomped, False)
 
     def stomped(self):
         state = self.current_animation_id
@@ -33,9 +33,9 @@ class Koopa(Enemy):
         self.set_animation('rolling')
 
         if self.game.entities.mario.rect[0] > self.rect[0]:
-            self.velocity[0] = -5
+            self.velocity[0] = -8
         else:
-            self.velocity[0] =  5
+            self.velocity[0] =  8
 
         self.rect[0] += self.velocity[0]
         self.load_collision_rect()
