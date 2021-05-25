@@ -1,7 +1,7 @@
 {
   "id": "power_up_question",
   "filename": "data/graphics/spritesheet/tiles.png",
-  "indexes": [4],
+  "indexes": [9],
   "resize": true,
   "scale": 3,
   "autotile_config": null

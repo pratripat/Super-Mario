@@ -26,7 +26,7 @@ class Flagpole:
             self.game.entities.mario.move(self.game.entities.get_colliding_entities(), self.game.dt, self.game.tilemap)
 
             if not pygame.mixer.music.get_busy():
-                self.game.load_level()
+                self.game.load_level(self.game.level+1)
 
             return
 
