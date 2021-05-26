@@ -64,10 +64,10 @@ class Mario(Entity):
             self.pipe_transition_timer -= 1
 
             if self.pipe_transition_timer == 48:
+                self.game.load_level(self.game.level, self.pipe_file_path, self.pipe_final_position)
                 self.set_position(self.pipe_final_position)
                 self.velocity = [0,0]
                 self.game.camera.scroll[0] = self.position[0]-self.game.screen.get_width()/2
-                self.game.camera.stuck_bottom = not self.game.camera.stuck_bottom
                 self.pipe_transition_velocity = self.pipe_transition_velocity_2
 
             if self.pipe_transition_timer == 0:
@@ -126,9 +126,11 @@ class Mario(Entity):
 
     def movement(self):
         speed = self.speed
+        acceleration = 0.1
 
         if self.running:
             speed = 8
+            acceleration = 0.2
 
         animation_state = 'idle'
 
@@ -140,7 +142,7 @@ class Mario(Entity):
 
         if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
-            self.velocity[0] -= 0.1
+            self.velocity[0] -= acceleration
             self.velocity[0] = max(-speed, self.velocity[0])
             self.flip(True)
 
@@ -149,7 +151,7 @@ class Mario(Entity):
 
         if self.directions['right'] and not self.directions['left'] and not self.crouching:
             animation_state = 'run'
-            self.velocity[0] += 0.1
+            self.velocity[0] += acceleration
             self.velocity[0] = min(speed, self.velocity[0])
             self.flip(False)
 
@@ -231,10 +233,11 @@ class Mario(Entity):
         self.rect = pygame.Rect(self.position[0]+offset[0]-start_offset[0], self.position[1]+offset[1]-start_offset[1], size[0]*self.scale, size[1]*self.scale)
         self.offset = offset
 
-    def play_pipe_transition(self, end_position, direction1, direction2):
+    def play_pipe_transition(self, file_path, end_position, direction1, direction2):
         if self.pipe_transition:
             return
 
+        animation_state = 'idle'
         self.pipe_music_sfx.play()
 
         if direction1[0] > 0:
@@ -262,6 +265,7 @@ class Mario(Entity):
         self.pipe_final_position = list(end_position)
         self.pipe_final_position[0] -= direction2[0]
         self.pipe_final_position[1] -= direction2[1]
+        self.pipe_file_path = file_path
         self.set_animation(animation_state)
 
     def shoot_fireball(self):

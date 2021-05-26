@@ -27,13 +27,17 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=0):
+    def load_level(self, level=0, filepath=None, position=[]):
         self.level = level
 
-        level = json.load(open('data/levels/level_order.json', 'r'))[level]
+        if not filepath:
+            level = json.load(open('data/levels/level_order.json', 'r'))[level]
+        else:
+            level = filepath
+
         self.tilemap = Tilemap(f'data/levels/{level}.json')
         self.pipe_guides = Pipe_Guides(self)
-        self.entities = Entity_Manager(self)
+        self.entities = Entity_Manager(self, position)
 
         self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
         self.camera.set_target(self.entities.mario)
