@@ -8,20 +8,22 @@ class Pipe_Guides:
         self.load_pipe_paths()
 
     def load_pipe_paths(self):
+        for guide in self.game.tilemap.get_tiles_with_id('pipe_guides'):
+            print(guide['position'])
+            
         directions = json.load(open('data/configs/pipe_guide_direction.json', 'r'))
+        level = json.load(open('data/levels/level_order.json', 'r'))[self.game.level]
+        end_positions = json.load(open(f'data/levels/pipe_guides/{level}.json', 'r'))
+        positions = []
 
         for guide in self.game.tilemap.get_tiles_with_id('pipe_guides'):
-            end_position, direction2 = self.get_end_pipe(guide, directions)
-            direction1 = directions[str(guide['index'])]
-            self.pipe_guides[tuple(guide['position'])] = (tuple(end_position), tuple(direction1), tuple(direction2))
+            position, file_path, direction = end_positions[str(guide['position'])]
+            self.pipe_guides[tuple(guide['position'])] = (file_path, tuple(position), tuple(directions[str(guide['index'])]), tuple(directions[str(direction)]))
 
-        self.pipe_guides = dict(reversed(list(self.pipe_guides.items())))
-        duplicate = {v:k for k,v in self.pipe_guides.items()}
-        self.pipe_guides = {v:k for k,v in duplicate.items()}
-
-        for start_position, (end_position, direction1, direction2) in self.pipe_guides.items():
+        for start_position, (file_path, end_position, direction1, direction2) in self.pipe_guides.items():
             rect = pygame.Rect(*start_position, self.game.tilemap.RES*2, self.game.tilemap.RES*2)
-            self.rects[(end_position, direction1, direction2)] = rect
+            self.rects[(file_path, end_position, direction1, direction2)] = rect
+
 
     def get_end_pipe(self, guide, directions):
         current_position = guide['position'].copy()

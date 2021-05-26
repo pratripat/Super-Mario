@@ -9,18 +9,33 @@ from .funcs import *
 import pygame
 
 class Entity_Manager:
-    def __init__(self, game):
+    def __init__(self, game, position):
         self.game = game
-        self.flagpole = Flagpole(game, self.game.tilemap.get_rects_with_id('flagpole')[0])
-        self.mario = Mario(game, self.game.tilemap.get_rects_with_id('mario')[0])
-        self.blocks = [Power_Up_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
-        self.enemies = [Goomba(game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
+        self.load_entities(position)
+
+    def load_entities(self, position):
+        try:
+            mario_rect = self.game.tilemap.get_rects_with_id('mario')[0]
+        except:
+            mario_rect = pygame.Rect(*position, 10, 10)
+
+        try:
+            self.flagpole = Flagpole(self.game, self.game.tilemap.get_rects_with_id('flagpole')[0])
+        except:
+            self.flagpole = None
+
+        self.mario = Mario(self.game, mario_rect)
+        self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
+        self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
 
     def run(self):
-        self.flagpole.run()
+        self.update_pipe_transitions()
+
+        if self.flagpole:
+            self.flagpole.run()
 
         self.mario.run()
 
@@ -54,18 +69,6 @@ class Entity_Manager:
             if item.far_from_mario or item.used:
                 self.items.remove(item)
 
-        for (position, direction1, direction2), rect in self.game.pipe_guides.rects.items():
-            if rect_rect_collision(self.mario.rect, rect):
-                if direction1[1] > 0 and not self.mario.crouching:
-                    continue
-                if direction1[0] > 0 and not self.mario.velocity[0] > 0:
-                    continue
-                if direction1[0] < 0 and not self.mario.velocity[0] < 0:
-                    continue
-
-                self.mario.play_pipe_transition(position, direction1, direction2)
-                break
-
     def render(self):
         for item in self.items:
             item.render()
@@ -82,9 +85,23 @@ class Entity_Manager:
         for fireball in self.fireballs:
             fireball.render()
 
-        self.flagpole.render()
+        if self.flagpole:
+            self.flagpole.render()
 
         self.mario.render()
+
+    def update_pipe_transitions(self):
+        for (file_path, position, direction1, direction2), rect in self.game.pipe_guides.rects.items():
+            if rect_rect_collision(self.mario.rect, rect):
+                if direction1[1] > 0 and not self.mario.crouching:
+                    continue
+                if direction1[0] > 0 and not self.mario.directions['right'] and not self.mario.collisions['bottom']:
+                    continue
+                if direction1[0] < 0 and not self.mario.directions['left'] and not self.mario.collisions['bottom']:
+                    continue
+
+                self.mario.play_pipe_transition(file_path, position, direction1, direction2)
+                break
 
     def get_colliding_entities(self, entity=None, enemies=False):
         colliding_blocks = []

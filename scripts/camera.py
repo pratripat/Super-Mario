@@ -20,19 +20,16 @@ class Camera:
             self.time -= 1
 
         if tilemap:
-            if self.scroll[0] < tilemap.left:
-                self.scroll[0] = tilemap.left
             if self.scroll[0] > tilemap.right-surface.get_width():
                 self.scroll[0] = tilemap.right-surface.get_width()
+            if self.scroll[0] < tilemap.left:
+                self.scroll[0] = tilemap.left
             if self.scroll[1] < tilemap.top:
                 self.scroll[1] = tilemap.top
             if self.scroll[1] > tilemap.bottom-surface.get_height():
                 self.scroll[1] = tilemap.bottom-surface.get_height()
 
-            if self.stuck_bottom:
-                self.scroll[1] = tilemap.bottom-surface.get_height()
-            else:
-                self.scroll[1] = tilemap.top
+            self.scroll[1] = tilemap.bottom-surface.get_height()
 
         tilemap.left = self.scroll[0]
 

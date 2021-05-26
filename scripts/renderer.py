@@ -6,10 +6,11 @@ class Renderer:
         self.game = game
 
     def render(self):
-        visible_tiles = ['background', 'ground', 'castle']
+        visible_tiles = ['background', 'ground']
 
         self.game.screen.fill((0,0,0))
         self.render_tiles_with_id(visible_tiles)
+        self.render_tiles_with_id(['castle'])
         self.game.entities.render()
         self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
 
