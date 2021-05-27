@@ -28,6 +28,11 @@ class Game:
         return 1/self.clock.get_fps()
 
     def load_level(self, level=0, filepath=None, position=[]):
+        try:
+            self.mario_data = self.entities.mario.id
+        except:
+            self.mario_data = 'small_mario'
+
         self.level = level
 
         if not filepath:
@@ -51,6 +56,9 @@ class Game:
 
     def run(self):
         self.clock.tick(80)
+
+        if self.clock.get_fps() < 30:
+            return
 
         self.camera.update(self.screen, self.tilemap)
         self.entities.run()

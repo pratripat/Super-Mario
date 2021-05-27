@@ -4,8 +4,8 @@ from ..entity import Entity
 from .fireball import Fireball
 
 class Mario(Entity):
-    def __init__(self, game, rect):
-        super().__init__(game.animations, 'small_mario', list(rect.topleft), 'idle')
+    def __init__(self, game, rect, id):
+        super().__init__(game.animations, id, list(rect.topleft), 'idle')
         self.game = game
         self.airtimer = 0
         self.speed = 5
