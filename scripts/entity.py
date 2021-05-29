@@ -29,7 +29,7 @@ class Entity:
     def move(self, rects, dt, tilemap=None):
         self.collisions = {k:False for k in ('top', 'right', 'bottom', 'left')}
 
-        self.rect[0] += round(self.velocity[0]*dt*80)
+        self.rect[0] += round(self.velocity[0])
         hit_list = self.get_colliding_objects(rects)
 
         for obj in hit_list:
@@ -40,7 +40,7 @@ class Entity:
                 self.rect.left = obj.right
                 self.collisions['left'] = True
 
-        self.rect[1] += round(self.velocity[1]*dt*80)
+        self.rect[1] += round(self.velocity[1])
         hit_list = self.get_colliding_objects(rects)
 
         for obj in hit_list:

@@ -116,6 +116,7 @@ class Entity_Manager:
 
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('ground'))
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('pipes'))
+        colliding_blocks.extend(self.game.tilemap.get_rects_with_id('mushroom'))
 
         return colliding_blocks
 
