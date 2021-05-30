@@ -4,7 +4,6 @@ from .enemy import Enemy
 class Goomba(Enemy):
     def __init__(self, game, rect):
         super().__init__(game, [rect[0], rect[1]], 'goomba', 'moving')
-        self.stomp_sfx = pygame.mixer.Sound('data/sfx/stomp.wav')
 
     def update(self):
         super().update(self.die)

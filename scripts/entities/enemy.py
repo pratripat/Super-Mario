@@ -11,6 +11,7 @@ class Enemy(Entity):
         self.active = False
         self.falling = False
         self.max_distance = 816
+        self.stomp_sfx = pygame.mixer.Sound('data/sfx/stomp.wav')
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll, vertical_flip=self.falling)
@@ -37,6 +38,7 @@ class Enemy(Entity):
                 if rect_rect_collision(enemy.rect, self.rect):
                     self.falling = True
                     self.velocity[1] = -5
+                    self.stomp_sfx.play()
                     return
 
         if self.dead:

@@ -33,9 +33,9 @@ class Koopa(Enemy):
         self.set_animation('rolling')
 
         if self.game.entities.mario.rect[0] > self.rect[0]:
-            self.velocity[0] = -8
+            self.velocity[0] = -10
         else:
-            self.velocity[0] =  8
+            self.velocity[0] =  10
 
         self.rect[0] += self.velocity[0]
         self.load_collision_rect()

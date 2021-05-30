@@ -99,10 +99,10 @@ class Mario(Entity):
             return
 
         for enemy in enemies:
-            if self.directions['down'] and not self.collisions['bottom']:
+            if self.velocity[1] > 0 and not self.collisions['bottom']:
                 return
 
-            if enemy.dead:
+            if enemy.dead or enemy.falling:
                 continue
 
             rect = self.rect.copy()
@@ -126,11 +126,10 @@ class Mario(Entity):
 
     def movement(self):
         speed = self.speed
-        acceleration = 0.1
+        acceleration = 0.2
 
         if self.running:
             speed = 8
-            acceleration = 0.2
 
         animation_state = 'idle'
 
@@ -160,7 +159,7 @@ class Mario(Entity):
 
         if (not (self.directions['right'] or self.directions['left'])) or (self.directions['right'] and self.directions['left']):
             if abs(self.velocity[0]) > 1:
-                self.velocity[0] -= 0.5 * self.velocity[0]/abs(self.velocity[0])
+                self.velocity[0] -= 0.3 * self.velocity[0]/abs(self.velocity[0])
                 animation_state = 'slide'
             else:
                 self.velocity[0] = 0
