@@ -44,6 +44,8 @@ class Game:
         self.pipe_guides = Pipe_Guides(self)
         self.entities = Entity_Manager(self, position)
 
+        self.renderer.refresh()
+
         self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
         self.camera.set_target(self.entities.mario)
         self.camera.set_movement(0.05)
@@ -53,6 +55,10 @@ class Game:
 
         pygame.mixer.music.load('data/music/main_theme.wav')
         pygame.mixer.music.play(-1)
+
+        if 'background' not in [entity['id'] for entity in self.tilemap.entities]:
+            pygame.mixer.music.load('data/music/underground.wav')
+            pygame.mixer.music.play(-1)
 
     def run(self):
         self.clock.tick(80)

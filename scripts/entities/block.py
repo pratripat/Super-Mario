@@ -18,6 +18,12 @@ class Block:
         self.offset_counter += 0.2
         self.offset = math.sin(self.offset_counter)*10
 
+        for enemy in self.game.entities.get_enemies():
+            if rect_rect_collision(enemy.rect, self.rect):
+                enemy.falling = True
+                enemy.velocity[1] = -5
+                enemy.stomp_sfx.play()
+
         if self.offset <= 0:
             self.updating_offset = False
             self.offset = 0

@@ -5,9 +5,14 @@ class Renderer:
     def __init__(self, game):
         self.game = game
 
+    def refresh(self):
+        self.background_color = (0,0,0)
+        if 'background' in [entity['id'] for entity in self.game.tilemap.entities]:
+            self.background_color = (107, 139, 255)    
+
     def render(self):
-        self.game.screen.fill((0,0,0))
-        self.render_tiles_with_id(['background', 'decorations'])
+        self.game.screen.fill(self.background_color)
+        self.render_tiles_with_id(['decorations'])
         self.render_tiles_with_id(['castle', 'ground'])
         self.game.entities.render()
         self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
