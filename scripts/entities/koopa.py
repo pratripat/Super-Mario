@@ -49,3 +49,47 @@ class Koopa(Enemy):
 
         self.rect = pygame.Rect(self.position[0]+offset[0]-start_offset[0], self.position[1]+offset[1]-start_offset[1], size[0]*self.scale, size[1]*self.scale)
         self.offset = offset
+
+class Red_Koopa(Koopa):
+    def __init__(self, game, rect):
+        super().__init__(game, rect)
+        self.id = 'red_koopa'
+        self.set_animation('moving')
+
+    def update(self):
+        super().update()
+
+        if self.current_animation_id != 'red_koopa_moving':
+            return
+
+        position = self.position
+        position = [position[0]//self.game.tilemap.RES, position[1]//self.game.tilemap.RES+2]
+        position = [position[0]*self.game.tilemap.RES, position[1]*self.game.tilemap.RES]
+
+        if not self.flipped:
+            position[0] += self.game.tilemap.RES
+
+        tiles = self.game.tilemap.get_tiles_with_position('ground', position)
+
+        if len(tiles) == 0:
+            self.velocity[0] *= -1
+            self.rect[0] += self.velocity[0]
+
+    def stomped(self):
+        state = self.current_animation_id
+
+        if state == 'red_koopa_idle':
+            self.roll()
+            return
+
+        if state == 'red_koopa_moving':
+            self.set_animation('idle')
+            self.velocity[0] = 0
+            self.load_collision_rect()
+            return
+
+        if state == 'red_koopa_rolling':
+            self.set_animation('idle')
+            self.velocity[0] = 0
+            self.load_collision_rect()
+            return

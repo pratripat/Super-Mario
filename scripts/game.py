@@ -31,7 +31,7 @@ class Game:
         try:
             self.mario_data = self.entities.mario.id
         except:
-            self.mario_data = 'small_mario'
+            self.mario_data = 'fire_mario'
 
         self.level = level
 
@@ -48,7 +48,6 @@ class Game:
 
         self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
         self.camera.set_target(self.entities.mario)
-        self.camera.set_movement(0.05)
 
         self.paused = False
         self.level_finished = False
