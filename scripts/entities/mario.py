@@ -107,12 +107,13 @@ class Mario(Entity):
 
             rect = self.rect.copy()
             rect2 = enemy.rect.copy()
-            if enemy.current_animation_id == 'koopa_idle':
+            if enemy.current_animation_id == 'koopa_idle' or enemy.current_animation_id == 'red_koopa_idle':
                 rect[0] += self.velocity[0]
                 rect[1] += self.velocity[1]
 
                 if rect_rect_collision(rect, enemy.rect):
                     enemy.roll()
+                    enemy.rect[0] += enemy.velocity[0]
                     return
 
                 rect[0] -= self.velocity[0]
