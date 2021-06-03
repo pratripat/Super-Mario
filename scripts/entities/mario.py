@@ -63,7 +63,7 @@ class Mario(Entity):
 
             self.pipe_transition_timer -= 1
 
-            if self.pipe_transition_timer == 48:
+            if self.pipe_transition_timer == 96:
                 self.game.load_level(self.game.level, self.pipe_file_path, self.pipe_final_position)
                 self.set_position(self.pipe_final_position)
                 self.velocity = [0,0]
@@ -260,7 +260,7 @@ class Mario(Entity):
             self.pipe_transition_velocity_2[1] = -1
 
         self.game.paused = True
-        self.pipe_transition_timer = 96
+        self.pipe_transition_timer = 192
         self.pipe_transition = True
         self.pipe_final_position = list(end_position)
         self.pipe_final_position[0] -= direction2[0]

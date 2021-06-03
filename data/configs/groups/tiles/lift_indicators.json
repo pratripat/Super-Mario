@@ -1,0 +1,8 @@
+{
+  "id": "lift_indicators",
+  "filename": "data/graphics/spritesheet/lift_indicators.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

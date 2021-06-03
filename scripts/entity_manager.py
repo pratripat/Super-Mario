@@ -6,6 +6,7 @@ from .entities.goomba import Goomba
 from .entities.koopa import Koopa, Red_Koopa
 from .entities.flagpole import Flagpole
 from .entities.coin import Coin
+from .entities.lift import Lift
 from .funcs import *
 import pygame
 
@@ -29,6 +30,7 @@ class Entity_Manager:
         self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
         self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]
         self.coins = [Coin(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('coin')]
+        self.lifts = [Lift(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('lift')]
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
@@ -75,6 +77,11 @@ class Entity_Manager:
             if item.far_from_mario or item.used:
                 self.items.remove(item)
 
+        for lift in self.lifts[:]:
+            lift.update()
+            if lift.offscreen:
+                self.lifts.remove(lift)
+
         for coin in self.coins[:]:
             coin.update()
             if rect_rect_collision(coin.rect, self.mario.rect):
@@ -98,14 +105,17 @@ class Entity_Manager:
         for question_block in self.blocks:
             question_block.render()
 
-        for coin in self.coins[:]:
+        for enemy in self.enemies:
+            enemy.render()
+
+        for lift in self.lifts:
+            lift.render()
+
+        for coin in self.coins:
             coin.render()
 
         for piece in self.brick_pieces:
             piece.render()
-
-        for enemy in self.enemies:
-            enemy.render()
 
         for fireball in self.fireballs:
             fireball.render()
@@ -135,6 +145,9 @@ class Entity_Manager:
         colliding_blocks = []
         for block in self.blocks:
             colliding_blocks.append(block.rect)
+
+        for lift in self.lifts:
+            colliding_blocks.append(lift.rect)
 
         if enemies:
             for enemy in self.enemies:
