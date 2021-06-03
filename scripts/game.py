@@ -5,6 +5,7 @@ from .renderer import Renderer
 from .tilemap import Tilemap
 from .camera import Camera
 from .pipe_guides import Pipe_Guides
+from .lift_spawner import Lift_Spawner_Manager
 
 pygame.init()
 
@@ -31,7 +32,7 @@ class Game:
         try:
             self.mario_data = self.entities.mario.id
         except:
-            self.mario_data = 'fire_mario'
+            self.mario_data = 'small_mario'
 
         self.level = level
 
@@ -42,6 +43,7 @@ class Game:
 
         self.tilemap = Tilemap(f'data/levels/{level}.json')
         self.pipe_guides = Pipe_Guides(self)
+        self.lift_spawners = Lift_Spawner_Manager(self)
         self.entities = Entity_Manager(self, position)
 
         self.renderer.refresh()
@@ -66,6 +68,7 @@ class Game:
             return
 
         self.camera.update(self.screen, self.tilemap)
+        self.lift_spawners.update()
         self.entities.run()
 
         self.renderer.render()
