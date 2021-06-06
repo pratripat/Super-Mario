@@ -8,7 +8,11 @@ class Koopa(Enemy):
         self.load_collision_rect()
 
     def update(self):
-        super().update(self.stomped, False)
+        enemy_collisions = True
+        if self.current_animation_id == 'koopa_rolling' or self.current_animation_id == 'red_koopa_rolling':
+            enemy_collisions = False
+
+        super().update(self.stomped, enemy_collisions)
 
     def stomped(self):
         state = self.current_animation_id

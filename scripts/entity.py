@@ -20,7 +20,7 @@ class Entity:
     def render(self, surface, scroll=[0,0], colorkey=None, vertical_flip=False):
         self.current_animation.render(surface, (self.position[0]-scroll[0], self.position[1]-scroll[1]), [self.flipped, vertical_flip], colorkey)
 
-        # pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
+        #pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
 
     #Updates the animation
     def update(self, dt):
@@ -29,7 +29,7 @@ class Entity:
     def move(self, rects, dt, tilemap=None):
         self.collisions = {k:False for k in ('top', 'right', 'bottom', 'left')}
 
-        self.rect[0] += round(self.velocity[0])
+        self.rect[0] += round(self.velocity[0], 2)
         hit_list = self.get_colliding_objects(rects)
 
         for obj in hit_list:
@@ -40,7 +40,7 @@ class Entity:
                 self.rect.left = obj.right
                 self.collisions['left'] = True
 
-        self.rect[1] += round(self.velocity[1])
+        self.rect[1] += round(self.velocity[1], 2)
         hit_list = self.get_colliding_objects(rects)
 
         for obj in hit_list:
