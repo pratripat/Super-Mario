@@ -20,7 +20,6 @@ class Lift_Spawner:
     @property
     def velocity(self):
         if self.position[1] <= self.game.tilemap.top:
-            print(self.position, self.game.tilemap.top)
             return [0, 2]
         else:
             return [0,-2]
@@ -29,7 +28,6 @@ class Lift_Spawner_Manager:
     def __init__(self, game):
         self.game = game
         self.lift_spawners = [Lift_Spawner(game, list(rect.topleft)) for rect in self.game.tilemap.get_rects_with_id('lift_spawner')]
-        print(self.lift_spawners)
 
     def update(self):
         for lift_spawner in self.lift_spawners:

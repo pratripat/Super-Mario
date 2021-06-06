@@ -10,13 +10,15 @@ class Enemy(Entity):
         self.remove = False
         self.active = False
         self.falling = False
-        self.max_distance = 816
+        self.stompable = True
+        self.gravity = True
+        self.max_distance = 960
         self.stomp_sfx = pygame.mixer.Sound('data/sfx/stomp.wav')
 
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll, vertical_flip=self.falling)
 
-    def update(self, function=None, enemies=True):
+    def update(self, function=None, enemies=True, collisions=True):
         if not self.active:
             if self.on_screen:
                 self.active = True
@@ -50,7 +52,10 @@ class Enemy(Entity):
             return
 
         self.movement()
-        self.move(self.game.entities.get_colliding_entities(entity=self, enemies=enemies), self.game.dt)
+        self.move(enemies, collisions)
+
+        if not self.stompable:
+            return
 
         if self.game.entities.mario.directions['down'] and not self.game.entities.mario.collisions['bottom']:
             rect = self.game.entities.mario.rect.copy()
@@ -62,6 +67,14 @@ class Enemy(Entity):
 
                 self.game.entities.mario.rect[1] -= self.game.entities.mario.velocity[1]
                 self.game.entities.mario.velocity[1] *= -1
+
+    def move(self, enemies, collisions):
+        if collisions:
+            super().move(self.game.entities.get_colliding_entities(entity=self, enemies=enemies), self.game.dt)
+            return
+
+        self.rect[0] += self.velocity[0]
+        self.rect[1] += self.velocity[1]
 
     def movement(self):
         if self.collisions['bottom']:
@@ -75,13 +88,14 @@ class Enemy(Entity):
         else:
             self.flip(False)
 
-        self.velocity[1] += 1
+        if self.gravity:
+            self.velocity[1] += 1
 
     @property
     def on_screen(self):
         return (
-            0 < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
-            0 < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
+            -self.rect.w < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
+            -self.rect.h < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
         )
 
     @property
