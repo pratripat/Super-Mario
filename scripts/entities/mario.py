@@ -8,7 +8,7 @@ class Mario(Entity):
         super().__init__(game.animations, id, list(rect.topleft), 'idle')
         self.game = game
         self.airtimer = 0
-        self.speed = 5
+        self.speed = 4
         self.running = False
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
@@ -27,7 +27,6 @@ class Mario(Entity):
         self.small_mario_jump_sfx = pygame.mixer.Sound('data/sfx/small_mario_jump.wav')
         self.mario_jump_sfx = pygame.mixer.Sound('data/sfx/mario_jump.wav')
         self.fireball_sfx = pygame.mixer.Sound('data/sfx/fireball.wav')
-        self.pipe_music_sfx = pygame.mixer.Sound('data/sfx/damage.wav')
 
         self.load_collision_rect(self.id)
 
@@ -107,7 +106,7 @@ class Mario(Entity):
 
             rect = self.rect.copy()
             rect2 = enemy.rect.copy()
-            if enemy.current_animation_id == 'koopa_idle' or enemy.current_animation_id == 'red_koopa_idle':
+            if enemy.current_animation_id == f'{self.game.world_type}_koopa_idle' or enemy.current_animation_id == 'red_koopa_idle':
                 rect[0] += self.velocity[0]
                 rect[1] += self.velocity[1]
 
@@ -138,7 +137,7 @@ class Mario(Entity):
             self.airtimer = 0
             self.velocity[1] = 0
         elif self.airtimer == 0:
-            self.airtimer = 10
+            self.airtimer = 15
 
         if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
@@ -173,8 +172,8 @@ class Mario(Entity):
             if self.airtimer == 0:
                 self.jump_sfx.play()
 
-            if self.airtimer < 10:
-                self.velocity[1] -= 3.8*self.airtimer/10
+            if self.airtimer < 15:
+                self.velocity[1] -= 3.8*self.airtimer/25
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
@@ -238,7 +237,8 @@ class Mario(Entity):
             return
 
         animation_state = 'idle'
-        self.pipe_music_sfx.play()
+        pygame.mixer.music.load('data/music/pipe.wav')
+        pygame.mixer.music.play()
 
         if direction1[0] > 0:
             self.pipe_transition_velocity[0] =  1

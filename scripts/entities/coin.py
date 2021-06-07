@@ -4,7 +4,7 @@ class Coin:
     def __init__(self, game, rect):
         self.game = game
         self.rect = rect
-        self.animation = self.game.animations.get_animation('coin')
+        self.animation = self.game.animations.get_animation(f'{self.game.world_type}_coin')
         self.coin_sfx = pygame.mixer.Sound('data/sfx/coin.wav')
 
     def render(self):

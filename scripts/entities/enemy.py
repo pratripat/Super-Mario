@@ -36,7 +36,7 @@ class Enemy(Entity):
         super().update(self.game.dt)
 
         for enemy in self.game.entities.enemies:
-            if enemy != self and (enemy.id == 'koopa' or enemy.id == 'red_koopa') and (enemy.current_animation_id == 'koopa_rolling' or enemy.current_animation_id == 'red_koopa_rolling'):
+            if enemy != self and (enemy.id == f'{self.game.world_type}_koopa' or enemy.id == 'red_koopa') and (enemy.current_animation_id == f'{self.game.world_type}_koopa_rolling' or enemy.current_animation_id == 'red_koopa_rolling'):
                 if rect_rect_collision(enemy.rect, self.rect):
                     self.falling = True
                     self.velocity[1] = -5

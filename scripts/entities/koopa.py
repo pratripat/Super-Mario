@@ -4,12 +4,12 @@ import pygame, json
 
 class Koopa(Enemy):
     def __init__(self, game, rect):
-        super().__init__(game, [rect[0], rect[1]], 'koopa', 'moving')
+        super().__init__(game, [rect[0], rect[1]], f'{game.world_type}_koopa', 'moving')
         self.load_collision_rect()
 
     def update(self):
         enemy_collisions = True
-        if self.current_animation_id == 'koopa_rolling' or self.current_animation_id == 'red_koopa_rolling':
+        if self.current_animation_id == f'{self.game.world_type}_koopa_rolling' or self.current_animation_id == 'red_koopa_rolling':
             enemy_collisions = False
 
         super().update(self.stomped, enemy_collisions)
@@ -17,17 +17,17 @@ class Koopa(Enemy):
     def stomped(self):
         state = self.current_animation_id
 
-        if state == 'koopa_idle':
+        if state == f'{self.game.world_type}_koopa_idle':
             self.roll()
             return
 
-        if state == 'koopa_moving':
+        if state == f'{self.game.world_type}_koopa_moving':
             self.set_animation('idle')
             self.velocity[0] = 0
             self.load_collision_rect()
             return
 
-        if state == 'koopa_rolling':
+        if state == f'{self.game.world_type}_koopa_rolling':
             self.set_animation('idle')
             self.velocity[0] = 0
             self.load_collision_rect()
@@ -45,8 +45,13 @@ class Koopa(Enemy):
         self.load_collision_rect()
 
     def load_collision_rect(self):
+        if self.id == 'red_koopa':
+            animation_id = self.current_animation_id
+        else:
+            animation_id = self.current_animation_id.split(f'{self.game.world_type}_')[1]
+
         collision_rects = json.load(open('data/configs/collision_boxes/koopa.json', 'r'))
-        collision_rect = collision_rects[self.current_animation_id]
+        collision_rect = collision_rects[animation_id]
         offset = [collision_rect['offset'][0]*self.scale, collision_rect['offset'][1]*self.scale]
         start_offset = [collision_rect['start_offset'][0]*self.scale, collision_rect['start_offset'][1]*self.scale]
         size = collision_rect['size']

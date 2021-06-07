@@ -3,7 +3,7 @@ import pygame, math
 class Brick_Piece:
     def __init__(self, game, position, angle, n):
         self.game = game
-        self.image = pygame.image.load(f'data/graphics/images/brick_piece_{n}.png').convert()
+        self.image = pygame.image.load(f'data/graphics/images/{self.game.world_type}_brick_pieces/{n}.png').convert()
         self.image = pygame.transform.scale(self.image, (self.image.get_width()*3, self.image.get_height()*3))
         self.image.set_colorkey((0,0,0))
         self.position = [position[0]-self.image.get_width()/2, position[1]]

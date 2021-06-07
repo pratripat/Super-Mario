@@ -37,7 +37,7 @@ class Game:
         self.level = level
 
         if not filepath:
-            level = json.load(open('data/levels/level_order.json', 'r'))[level]
+            level, self.world_type = json.load(open('data/levels/level_order.json', 'r'))[level]
         else:
             level = filepath
 
@@ -100,6 +100,7 @@ class Game:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = False
                     self.entities.mario.directions['down'] = True
+                    self.entities.mario.airtimer = 15
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = False
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
