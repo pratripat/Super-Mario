@@ -32,4 +32,4 @@ class Power_Up_Block(Question_Block):
     def reveal(self):
         if self.hits > 0:
             self.sfx.play()
-            self.animation = self.game.animations.get_animation('empty_block')
+            self.animation = self.game.animations.get_animation(f'{self.game.world_type}_empty_block')

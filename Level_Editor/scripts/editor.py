@@ -31,6 +31,7 @@ class Editor:
         self.world.render()
         self.world.render_current_selection(mouse_position, self.selection_panel.get_current_selection())
         self.selection_panel.render()
+        self.render_mouse_location(mouse_position)
 
         pygame.display.update()
 
@@ -69,6 +70,10 @@ class Editor:
             self.world.save()
 
         self.render(mouse_position)
+
+    def render_mouse_location(self, mouse_position):
+        self.font.render(self.screen, f'{int((mouse_position[0]+self.world.scroll[0])//self.res)};{int((mouse_position[1]+self.world.scroll[1])//self.res)}', [320, 10], color=(173,195,232))
+        self.font.render(self.screen, f'{int((mouse_position[0]+self.world.scroll[0])//self.res)*self.res};{int((mouse_position[1]+self.world.scroll[1])//self.res)*self.res}', [320, 30], color=(173,195,232))
 
     def event_loop(self):
         for event in pygame.event.get():

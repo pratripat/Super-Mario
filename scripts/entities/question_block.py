@@ -9,13 +9,13 @@ class Question_Block(Block):
         super().__init__(rect, 'question')
         self.game = game
         self.hits = hits
-        self.set_new_animation(id, index)
+        self.set_new_animation(f'{self.game.world_type}_{id}', index)
         self.sfx = pygame.mixer.Sound('data/sfx/coin.wav')
         self.coin = Coin(game, [self.rect[0]+self.animation.image.get_width()/2, self.rect[1]-self.animation.image.get_height()/2])
 
     def set_new_animation(self, id, index):
         if id not in self.game.animations.animations:
-            animation_data = Animation_Data('data/graphics/animations/question_block')
+            animation_data = Animation_Data(f'data/graphics/animations/{self.game.world_type}_question_block')
             animation_data.images.clear()
             animation_data.images.append(load_images_from_spritesheet('data/graphics/spritesheet/tiles.png')[index-2])
             animation_data.config['frames'] = [5]
@@ -47,6 +47,6 @@ class Question_Block(Block):
         if self.hits > 0:
             self.sfx.play()
             if self.hits == 1:
-                self.animation = self.game.animations.get_animation('empty_block')
+                self.animation = self.game.animations.get_animation(f'{self.game.world_type}_empty_block')
             self.coin.updating = True
             self.coin.offset = 0

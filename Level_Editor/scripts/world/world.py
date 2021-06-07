@@ -38,7 +38,7 @@ class World:
 
             j, i = (position[0]+self.editor.world.scroll[0])//self.editor.res, (position[1]+self.editor.world.scroll[1])//self.editor.res
             self.editor.screen.blit(surface, ((j*self.editor.res-self.editor.world.scroll[0]), (i*self.editor.res-self.editor.world.scroll[1])))
-
+            
     def run(self, clicked, position, selection):
         #Removes the rectangle and adds an image
         if not clicked:

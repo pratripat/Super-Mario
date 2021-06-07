@@ -3,15 +3,16 @@ import pygame, math, json
 
 class Piranha_Plant(Enemy):
     def __init__(self, game, rect):
-        super().__init__(game, list(rect.topleft), 'piranha_plant', '')
+        super().__init__(game, list(rect.topleft), f'{game.world_type}_piranha_plant', '')
         self.movement_timer = 0
         self.velocity[0] = 0
         self.velocity[1] = 1
         self.gravity = False
         self.stompable = False
-        self.top_position = self.position.copy()
-        self.bottom_position = [self.position[0], self.position[1] + self.game.tilemap.RES*2]
+        self.top_position = [self.position[0], self.position[1] - self.game.tilemap.RES*2]
+        self.bottom_position = self.position.copy()
         self.holding_timer = 0
+        self.rest_distance = 96
         self.load_collision_rect()
 
     def update(self):
@@ -19,6 +20,15 @@ class Piranha_Plant(Enemy):
 
         if self.holding_timer > 0:
             self.holding_timer -= self.game.dt
+            return
+
+        if self.position[1] >= self.bottom_position[1] and abs(self.game.entities.mario.position[0]-self.position[0]) < self.rest_distance:
+            self.velocity[1] = 0
+            return
+
+        if self.velocity[1] != 0 and (self.position[1] == self.top_position[1] or self.position[1] == self.bottom_position[1]):
+            self.velocity[1] = 0
+            self.holding_timer = 1
             return
 
         if self.position[1] >= self.bottom_position[1]:

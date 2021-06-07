@@ -13,7 +13,7 @@ class Pipe_Guides:
             #     print(guide['position'])
 
             directions = json.load(open('data/configs/pipe_guide_direction.json', 'r'))
-            level = json.load(open('data/levels/level_order.json', 'r'))[self.game.level]
+            level = json.load(open('data/levels/level_order.json', 'r'))[self.game.level][0]
             end_positions = json.load(open(f'data/levels/pipe_guides/{level}.json', 'r'))
             positions = []
 
@@ -24,5 +24,6 @@ class Pipe_Guides:
             for start_position, (file_path, end_position, direction1, direction2) in self.pipe_guides.items():
                 rect = pygame.Rect(*start_position, self.game.tilemap.RES*2, self.game.tilemap.RES*2)
                 self.rects[(file_path, end_position, direction1, direction2)] = rect
-        except:
+        except Exception as e:
+            print(e)
             pass
