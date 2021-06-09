@@ -4,7 +4,7 @@ from ..entity import Entity
 from .fireball import Fireball
 
 class Mario(Entity):
-    def __init__(self, game, rect, id):
+    def __init__(self, game, rect, id, transition_velocity):
         super().__init__(game.animations, id, list(rect.topleft), 'idle')
         self.game = game
         self.airtimer = 0
@@ -27,6 +27,16 @@ class Mario(Entity):
         self.small_mario_jump_sfx = pygame.mixer.Sound('data/sfx/small_mario_jump.wav')
         self.mario_jump_sfx = pygame.mixer.Sound('data/sfx/mario_jump.wav')
         self.fireball_sfx = pygame.mixer.Sound('data/sfx/fireball.wav')
+
+        if transition_velocity:
+            self.pipe_transition = True
+            self.pipe_transition_timer = 96
+            self.pipe_transition_velocity = transition_velocity.copy()
+
+            if not transition_velocity == [0,0]:
+                self.damage_sfx.play()
+            else:
+                self.set_animation('jump')
 
         self.load_collision_rect(self.id)
 
@@ -63,11 +73,9 @@ class Mario(Entity):
             self.pipe_transition_timer -= 1
 
             if self.pipe_transition_timer == 96:
-                self.game.load_level(self.game.level, self.pipe_file_path, self.pipe_final_position)
                 self.set_position(self.pipe_final_position)
-                self.velocity = [0,0]
                 self.game.camera.scroll[0] = self.position[0]-self.game.screen.get_width()/2
-                self.pipe_transition_velocity = self.pipe_transition_velocity_2
+                self.game.load_level(level=self.game.level, filepath=self.pipe_file_path, world_type=self.pipe_world_type, position=self.pipe_final_position, transition_velocity=self.pipe_transition_velocity_2)
 
             if self.pipe_transition_timer == 0:
                 self.game.paused = False
@@ -232,7 +240,7 @@ class Mario(Entity):
         self.rect = pygame.Rect(self.position[0]+offset[0]-start_offset[0], self.position[1]+offset[1]-start_offset[1], size[0]*self.scale, size[1]*self.scale)
         self.offset = offset
 
-    def play_pipe_transition(self, file_path, end_position, direction1, direction2):
+    def play_pipe_transition(self, file_path, end_position, world_type, direction1, direction2):
         if self.pipe_transition:
             return
 
@@ -266,6 +274,7 @@ class Mario(Entity):
         self.pipe_final_position[0] -= direction2[0]
         self.pipe_final_position[1] -= direction2[1]
         self.pipe_file_path = file_path
+        self.pipe_world_type = world_type
         self.set_animation(animation_state)
 
     def shoot_fireball(self):

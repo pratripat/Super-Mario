@@ -12,11 +12,11 @@ from .funcs import *
 import pygame
 
 class Entity_Manager:
-    def __init__(self, game, position):
+    def __init__(self, game, position, transition_velocity):
         self.game = game
-        self.load_entities(position)
+        self.load_entities(position, transition_velocity)
 
-    def load_entities(self, position):
+    def load_entities(self, position, transition_velocity):
         try:
             mario_rect = self.game.tilemap.get_rects_with_id('mario')[0]
         except:
@@ -27,7 +27,7 @@ class Entity_Manager:
         except:
             self.flagpole = None
 
-        self.mario = Mario(self.game, mario_rect, self.game.mario_data)
+        self.mario = Mario(self.game, mario_rect, self.game.mario_data, transition_velocity)
         self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
         self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]
         self.coins = [Coin(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('coin')]
@@ -130,7 +130,7 @@ class Entity_Manager:
         self.mario.render()
 
     def update_pipe_transitions(self):
-        for (file_path, position, direction1, direction2), rect in self.game.pipe_guides.rects.items():
+        for (file_path, position, world_type, direction1, direction2), rect in self.game.pipe_guides.rects.items():
             if rect_rect_collision(self.mario.rect, rect):
                 if direction1[1] > 0 and not self.mario.crouching:
                     continue
@@ -139,7 +139,7 @@ class Entity_Manager:
                 if direction1[0] < 0 and not self.mario.directions['left'] and not self.mario.collisions['bottom']:
                     continue
 
-                self.mario.play_pipe_transition(file_path, position, direction1, direction2)
+                self.mario.play_pipe_transition(file_path, position, world_type, direction1, direction2)
                 break
 
     def get_colliding_entities(self, entity=None, enemies=False):

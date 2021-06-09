@@ -57,7 +57,10 @@ class Enemy(Entity):
         if not self.stompable:
             return
 
-        if self.game.entities.mario.directions['down'] and not self.game.entities.mario.collisions['bottom']:
+        if self.game.entities.mario.velocity[1] > 1 and self.game.entities.mario.directions['down'] and not self.game.entities.mario.collisions['bottom']:
+            if self.game.entities.mario.dead:
+                return
+
             rect = self.game.entities.mario.rect.copy()
             rect[1] += self.game.entities.mario.velocity[1]
 

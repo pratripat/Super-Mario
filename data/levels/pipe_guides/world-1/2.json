@@ -1,6 +1,6 @@
 {
-  "[768, 528]": [[480, 48], "world-1/underground2", 2],
-  "[5280, 384]": [[480, 48], "world-1/underground2(2)", 2],
-  "[912, 528]": [[5856, 480], "world-1/underground2", 0],
-  "[8352, 384]": [[528, 480], "world-1/ground2", 0]
+  "[768, 528]": [[480, 48], "world-1/underground2", "underworld",  4],
+  "[5280, 384]": [[480, 48], "world-1/underground2(2)", "underworld", 4],
+  "[912, 528]": [[5856, 480], "world-1/underground2", "underworld",  0],
+  "[8352, 384]": [[528, 480], "world-1/ground2", "overworld", 0]
 }

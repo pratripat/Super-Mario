@@ -28,7 +28,7 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=0, filepath=None, position=[]):
+    def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None):
         try:
             self.mario_data = self.entities.mario.id
         except:
@@ -40,11 +40,14 @@ class Game:
             level, self.world_type = json.load(open('data/levels/level_order.json', 'r'))[level]
         else:
             level = filepath
+            self.world_type = world_type
+
+        print(transition_velocity)
 
         self.tilemap = Tilemap(f'data/levels/{level}.json')
         self.pipe_guides = Pipe_Guides(self)
         self.lift_spawners = Lift_Spawner_Manager(self)
-        self.entities = Entity_Manager(self, position)
+        self.entities = Entity_Manager(self, position, transition_velocity)
 
         self.renderer.refresh()
 
