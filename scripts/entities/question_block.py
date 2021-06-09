@@ -11,7 +11,9 @@ class Question_Block(Block):
         self.hits = hits
         self.set_new_animation(f'{self.game.world_type}_{id}', index)
         self.sfx = pygame.mixer.Sound('data/sfx/coin.wav')
-        self.coin = Coin(game, [self.rect[0]+self.animation.image.get_width()/2, self.rect[1]-self.animation.image.get_height()/2])
+        self.coins = [Coin(game, [self.rect[0]+self.animation.image.get_width()/2, self.rect[1]-self.animation.image.get_height()/2]) for _ in range(self.hits)]
+        self.coin = self.coins[0]
+        self.updating_coins = []
 
     def set_new_animation(self, id, index):
         if id not in self.game.animations.animations:
@@ -28,8 +30,8 @@ class Question_Block(Block):
     def render(self):
         self.animation.render(self.game.screen, [self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.offset-self.game.camera.scroll[1]])
 
-        if self.coin.updating:
-            self.coin.render()
+        for coin in self.updating_coins:
+            coin.render()
 
     def update(self):
         self.animation.run(self.game.dt)
@@ -37,16 +39,23 @@ class Question_Block(Block):
         self.up_collision(self.game.entities.mario, self.reveal)
         self.update_offset()
 
-        if self.coin.updating:
-            self.coin.update()
+        for coin in self.updating_coins[:]:
+            coin.update()
 
-            if self.coin.finished:
-                self.coin.updating = False
+            if coin.finished:
+                coin.updating = False
+                self.updating_coins.remove(coin)
 
     def reveal(self):
         if self.hits > 0:
             self.sfx.play()
+
             if self.hits == 1:
                 self.animation = self.game.animations.get_animation(f'{self.game.world_type}_empty_block')
+
             self.coin.updating = True
-            self.coin.offset = 0
+            self.coins.remove(self.coin)
+            self.updating_coins.append(self.coin)
+
+            if len(self.coins):
+                self.coin = self.coins[0]

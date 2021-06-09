@@ -1,4 +1,4 @@
 {
-  "[3072, 288]" : [[624, 48], "world-1/underground1", 1],
-  "[1104, 528]" : [[8161, 480], "world-1/ground1", 1]
+  "[3072, 288]" : [[624, 48], "world-1/underground1", "underworld", 4],
+  "[1104, 528]" : [[8161, 480], "world-1/ground1", "overworld", 0]
 }
