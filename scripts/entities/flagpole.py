@@ -39,8 +39,10 @@ class Flagpole:
 
             self.game.paused = True
             self.game.level_finished = True
+            self.game.entities.mario.flip(False)
             self.game.entities.mario.set_animation('hold')
 
+            self.game.entities.mario.rect[0] = self.rect[0]-self.game.entities.mario.rect[2]+12
             self.game.entities.mario.rect[1] += 4
             self.flag_position[1] += 4
 

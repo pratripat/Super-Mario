@@ -28,15 +28,13 @@ class Mario(Entity):
         self.mario_jump_sfx = pygame.mixer.Sound('data/sfx/mario_jump.wav')
         self.fireball_sfx = pygame.mixer.Sound('data/sfx/fireball.wav')
 
-        if transition_velocity:
-            self.pipe_transition = True
-            self.pipe_transition_timer = 96
-            self.pipe_transition_velocity = transition_velocity.copy()
-
-            if not transition_velocity == [0,0]:
-                self.damage_sfx.play()
-            else:
+        if transition_velocity != None:
+            if transition_velocity == [0,0]:
                 self.set_animation('jump')
+            else:
+                self.pipe_transition = True
+                self.pipe_transition_timer = 96
+                self.pipe_transition_velocity = transition_velocity.copy()
 
         self.load_collision_rect(self.id)
 
@@ -76,12 +74,19 @@ class Mario(Entity):
                 self.set_position(self.pipe_final_position)
                 self.game.camera.scroll[0] = self.position[0]-self.game.screen.get_width()/2
                 self.game.load_level(level=self.game.level, filepath=self.pipe_file_path, world_type=self.pipe_world_type, position=self.pipe_final_position, transition_velocity=self.pipe_transition_velocity_2)
+                if self.pipe_transition_velocity_2 != None and self.pipe_transition_velocity_2 != [0,0]:
+                    pygame.mixer.music.stop()
 
-            if self.pipe_transition_timer == 0:
+            if self.pipe_transition_timer == 60:
+                pygame.mixer.music.load('data/music/pipe.wav')
+                pygame.mixer.music.play()
+
+            if self.pipe_transition_timer == -1:
                 self.game.paused = False
                 self.pipe_transition = False
                 self.pipe_transition_velocity = [0,0]
                 self.pipe_transition_velocity_2 = [0,0]
+                self.game.play_music()
 
             return
 
@@ -134,10 +139,10 @@ class Mario(Entity):
 
     def movement(self):
         speed = self.speed
-        acceleration = 0.2
+        acceleration = 0.15
 
         if self.running:
-            speed = 8
+            speed = 7
 
         animation_state = 'idle'
 
@@ -145,7 +150,7 @@ class Mario(Entity):
             self.airtimer = 0
             self.velocity[1] = 0
         elif self.airtimer == 0:
-            self.airtimer = 15
+            self.airtimer = 20
 
         if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
@@ -180,8 +185,8 @@ class Mario(Entity):
             if self.airtimer == 0:
                 self.jump_sfx.play()
 
-            if self.airtimer < 15:
-                self.velocity[1] -= 3.8*self.airtimer/25
+            if self.airtimer < 20:
+                self.velocity[1] -= 3.8*self.airtimer/50
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
@@ -276,6 +281,11 @@ class Mario(Entity):
         self.pipe_file_path = file_path
         self.pipe_world_type = world_type
         self.set_animation(animation_state)
+
+        if self.pipe_transition_velocity[0] > 0:
+            self.flip(False)
+        if self.pipe_transition_velocity[0] < 0:
+            self.flip(True)
 
     def shoot_fireball(self):
         if self.id != 'fire_mario':
