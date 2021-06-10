@@ -42,8 +42,6 @@ class Game:
             level = filepath
             self.world_type = world_type
 
-        print(transition_velocity)
-
         self.tilemap = Tilemap(f'data/levels/{level}.json')
         self.pipe_guides = Pipe_Guides(self)
         self.lift_spawners = Lift_Spawner_Manager(self)
@@ -57,12 +55,7 @@ class Game:
         self.paused = False
         self.level_finished = False
 
-        pygame.mixer.music.load('data/music/main_theme.wav')
-        pygame.mixer.music.play(-1)
-
-        if 'background' not in [entity['id'] for entity in self.tilemap.entities]:
-            pygame.mixer.music.load('data/music/underground.wav')
-            pygame.mixer.music.play(-1)
+        self.play_music()
 
     def run(self):
         self.clock.tick(80)
@@ -112,6 +105,14 @@ class Game:
                     self.entities.mario.crouching = False
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     self.entities.mario.running = False
+
+    def play_music(self):
+        pygame.mixer.music.load('data/music/main_theme.wav')
+        pygame.mixer.music.play(-1)
+
+        if 'background' not in [entity['id'] for entity in self.tilemap.entities]:
+            pygame.mixer.music.load('data/music/underground.wav')
+            pygame.mixer.music.play(-1)
 
     def main_loop(self):
         while True:
