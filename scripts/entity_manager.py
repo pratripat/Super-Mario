@@ -35,6 +35,7 @@ class Entity_Manager:
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
+        self.coin_animations = []
         self.animations = {}
 
     def run(self):
@@ -99,6 +100,11 @@ class Entity_Manager:
         for animation in delete_list:
             del self.animations[animation]
 
+        for coin_animation in self.coin_animations[:]:
+            coin_animation.update()
+            if coin_animation.finished:
+                self.coin_animations.remove(coin_animation)
+
     def render(self):
         for item in self.items:
             item.render()
@@ -123,6 +129,9 @@ class Entity_Manager:
 
         for animation, position in self.animations.items():
             animation.render(self.game.screen, (position[0]-self.game.camera.scroll[0], position[1]-self.game.camera.scroll[1]))
+
+        for animation in self.coin_animations:
+            animation.render()
 
         if self.flagpole:
             self.flagpole.render()

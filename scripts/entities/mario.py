@@ -150,7 +150,7 @@ class Mario(Entity):
             self.airtimer = 0
             self.velocity[1] = 0
         elif self.airtimer == 0:
-            self.airtimer = 20
+            self.airtimer = 15
 
         if self.directions['left'] and not self.directions['right'] and not self.crouching:
             animation_state = 'run'
@@ -172,7 +172,7 @@ class Mario(Entity):
 
         if (not (self.directions['right'] or self.directions['left'])) or (self.directions['right'] and self.directions['left']):
             if abs(self.velocity[0]) > 1:
-                self.velocity[0] -= 0.3 * self.velocity[0]/abs(self.velocity[0])
+                self.velocity[0] -= 0.2 * self.velocity[0]/abs(self.velocity[0])
                 animation_state = 'slide'
             else:
                 self.velocity[0] = 0
@@ -185,8 +185,8 @@ class Mario(Entity):
             if self.airtimer == 0:
                 self.jump_sfx.play()
 
-            if self.airtimer < 20:
-                self.velocity[1] -= 3.8*self.airtimer/50
+            if self.airtimer < 15:
+                self.velocity[1] -= 3.8*self.airtimer/25
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall
