@@ -11,4 +11,4 @@ class Coin:
         self.animation.render(self.game.screen, (self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.game.camera.scroll[1]))
 
     def update(self):
-        self.animation.run(self.game.dt)
+        self.animation.run(self.game.dt)    

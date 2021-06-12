@@ -1,4 +1,5 @@
 from ..funcs import *
+from .coin_vfx import Coin
 import math
 
 class Block:
@@ -23,6 +24,18 @@ class Block:
                 enemy.falling = True
                 enemy.velocity[1] = -5
                 enemy.stomp_sfx.play()
+
+        for coin in self.game.entities.coins[:]:
+            if rect_rect_collision(coin.rect, self.rect):
+                coin.coin_sfx.play()
+                self.game.entities.coins.remove(coin)
+                self.game.entities.coin_animations.append(Coin(self.game, list(coin.rect.center)))
+
+        for item in self.game.entities.items:
+            if rect_rect_collision(item.rect, self.rect):
+                item.velocity[0] *= -1
+                item.velocity[1] = -8
+                item.rect[1] -= self.offset
 
         if self.offset <= 0:
             self.updating_offset = False
