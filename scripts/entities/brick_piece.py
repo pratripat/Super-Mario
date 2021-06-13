@@ -7,7 +7,7 @@ class Brick_Piece:
         self.image = pygame.transform.scale(self.image, (self.image.get_width()*3, self.image.get_height()*3))
         self.image.set_colorkey((0,0,0))
         self.position = [position[0]-self.image.get_width()/2, position[1]]
-        self.velocity = [math.cos(angle)*2, math.sin(angle)*3-2]
+        self.velocity = [math.cos(angle)*2, math.sin(angle)*2-2]
 
     def render(self):
         self.game.screen.blit(self.image, [self.position[0]-self.game.camera.scroll[0], self.position[1]-self.game.camera.scroll[1]])

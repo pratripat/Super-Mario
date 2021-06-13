@@ -29,7 +29,7 @@ class Entity_Manager:
 
         self.mario = Mario(self.game, mario_rect, self.game.mario_data, transition_velocity)
         self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
-        self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]
+        self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('koopa_flying')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Red_Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('red_koopa_flying')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]
         self.coins = [Coin(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('coin')]
         self.lifts = [Lift(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('lift')]
         self.items = []
@@ -112,14 +112,14 @@ class Entity_Manager:
         for question_block in self.blocks:
             question_block.render()
 
-        for enemy in self.enemies:
-            enemy.render()
-
         for lift in self.lifts:
             lift.render()
 
         for coin in self.coins:
             coin.render()
+
+        for enemy in self.enemies:
+            enemy.render()
 
         for piece in self.brick_pieces:
             piece.render()
