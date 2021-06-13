@@ -1,6 +1,11 @@
 {
+  "koopa_flying": {
+    "start_offset": [0,-8],
+    "offset": [2,10],
+    "size": [12,14]
+  },
   "koopa_moving": {
-    "start_offset": [0,0],
+    "start_offset": [0,-8],
     "offset": [2,10],
     "size": [12,14]
   },

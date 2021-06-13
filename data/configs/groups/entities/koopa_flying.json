@@ -1,0 +1,8 @@
+{
+  "id": "koopa_flying",
+  "filename": "data/graphics/spritesheet/koopa_flying.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

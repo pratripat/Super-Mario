@@ -1,11 +1,16 @@
 from .enemy import Enemy
 from ..funcs import *
-import pygame, json
+import pygame, json, math
 
 class Koopa(Enemy):
-    def __init__(self, game, rect):
-        super().__init__(game, [rect[0], rect[1]], f'{game.world_type}_koopa', 'moving')
+    def __init__(self, game, rect, animation='moving'):
+        super().__init__(game, [rect[0], rect[1]], f'{game.world_type}_koopa', animation)
         self.load_collision_rect()
+
+        if animation == 'flying':
+            self.max_flying_timer = 100
+            self.flying_timer = self.max_flying_timer
+            self.flying = True
 
     def update(self):
         enemy_collisions = True
@@ -14,11 +19,34 @@ class Koopa(Enemy):
 
         super().update(self.stomped, enemy_collisions)
 
+        if self.current_animation_id == f'{self.game.world_type}_koopa_flying' or self.current_animation_id == 'red_koopa_flying':
+            self.gravity = False
+            if self.collisions['bottom'] and not self.flying:
+                self.flying_timer = self.max_flying_timer
+                self.flying = True
+
+            if self.flying:
+                self.flying_timer -= 1
+                self.rect[1] -= 2
+            else:
+                self.flying_timer -= 1
+                self.rect[1] += 2
+
+            if self.flying_timer == 0:
+                self.flying_timer = self.max_flying_timer
+                self.flying = not self.flying
+
     def stomped(self):
         state = self.current_animation_id
 
         if state == f'{self.game.world_type}_koopa_idle':
             self.roll()
+            return
+
+        if state == f'{self.game.world_type}_koopa_flying':
+            self.set_animation('moving')
+            self.load_collision_rect()
+            self.gravity = True
             return
 
         if state == f'{self.game.world_type}_koopa_moving':
@@ -37,9 +65,9 @@ class Koopa(Enemy):
         self.set_animation('rolling')
 
         if self.game.entities.mario.rect[0] > self.rect[0]:
-            self.velocity[0] = -10
+            self.velocity[0] = -9
         else:
-            self.velocity[0] =  10
+            self.velocity[0] =  9
 
         self.rect[0] += self.velocity[0]
         self.load_collision_rect()
@@ -60,10 +88,17 @@ class Koopa(Enemy):
         self.offset = offset
 
 class Red_Koopa(Koopa):
-    def __init__(self, game, rect):
+    def __init__(self, game, rect, animation='moving'):
         super().__init__(game, rect)
         self.id = 'red_koopa'
-        self.set_animation('moving')
+        self.set_animation(animation)
+
+        if animation == 'flying':
+            self.gravity = False
+            self.velocity[0] = 0
+            self.flying = True
+            self.max_flying_timer = 200
+            self.flying_timer = self.max_flying_timer
 
     def update(self):
         super().update()
@@ -89,6 +124,13 @@ class Red_Koopa(Koopa):
 
         if state == 'red_koopa_idle':
             self.roll()
+            return
+
+        if state == 'red_koopa_flying':
+            self.set_animation('moving')
+            self.velocity[0] = 0
+            self.gravity = True
+            self.load_collision_rect()
             return
 
         if state == 'red_koopa_moving':

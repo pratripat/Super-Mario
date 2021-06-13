@@ -12,8 +12,9 @@ pygame.init()
 class Game:
     def __init__(self):
         pygame.display.set_caption('Super Mario')
-        self.screen = pygame.display.set_mode((1000, 700), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((1200, 900), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
+        pygame.mouse.set_visible(False)
 
         self.animations = Animation_Handler()
         self.renderer = Renderer(self)
