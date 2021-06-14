@@ -5,7 +5,7 @@ class Mushroom(Entity):
     def __init__(self, game, position, type):
         super().__init__(game.animations, type, position, 'moving')
         self.game = game
-        self.velocity[0] = 2.5
+        self.velocity[0] = 3
         self.movement_timer = 0
         self.max_distance = 3696
         self.used = False

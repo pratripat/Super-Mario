@@ -20,21 +20,23 @@ class Koopa(Enemy):
         super().update(self.stomped, enemy_collisions)
 
         if self.current_animation_id == f'{self.game.world_type}_koopa_flying' or self.current_animation_id == 'red_koopa_flying':
+            self.fly()
+
+    def fly(self):
+        if self.collisions['bottom']:
+            self.flying_timer = self.max_flying_timer
             self.gravity = False
-            if self.collisions['bottom'] and not self.flying:
-                self.flying_timer = self.max_flying_timer
-                self.flying = True
 
-            if self.flying:
-                self.flying_timer -= 1
-                self.rect[1] -= 2
-            else:
-                self.flying_timer -= 1
-                self.rect[1] += 2
+        if self.flying_timer > 0:
+            self.flying_timer -= 1
+            self.rect[1] -= 3
 
-            if self.flying_timer == 0:
-                self.flying_timer = self.max_flying_timer
-                self.flying = not self.flying
+        if self.flying_timer == 0:
+            self.gravity = True
+
+        if self.gravity:
+            self.velocity[1] += 0.25
+            self.velocity[1] = min(3, self.velocity[1])
 
     def stomped(self):
         state = self.current_animation_id
@@ -118,6 +120,23 @@ class Red_Koopa(Koopa):
         if len(tiles) == 0:
             self.velocity[0] *= -1
             self.rect[0] += self.velocity[0]
+
+    def fly(self):
+        self.gravity = False
+        if self.collisions['bottom'] and not self.flying:
+            self.flying_timer = self.max_flying_timer
+            self.flying = True
+
+        if self.flying:
+            self.flying_timer -= 1
+            self.rect[1] -= 2
+        else:
+            self.flying_timer -= 1
+            self.rect[1] += 2
+
+        if self.flying_timer == 0:
+            self.flying_timer = self.max_flying_timer
+            self.flying = not self.flying
 
     def stomped(self):
         state = self.current_animation_id
