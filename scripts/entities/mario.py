@@ -7,20 +7,24 @@ class Mario(Entity):
     def __init__(self, game, rect, id, transition_velocity):
         super().__init__(game.animations, id, list(rect.topleft), 'idle')
         self.game = game
-        self.airtimer = 0
         self.speed = 4
+        self.airtimer = 0
+        self.dead = False
         self.running = False
-        self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
-        self.directions['down'] = True
+        self.invisible = False
         self.crouching = False
         self.flickering = False
         self.pipe_transition = False
-        self.dead = False
+        self.invincible_star = False
+        self.current_animation_frame = None
         self.flicker_timer = 0
         self.invincible_timer = 0
         self.pipe_transition_timer = 0
         self.pipe_transition_velocity = [0,0]
         self.pipe_transition_velocity_2 = [0,0]
+
+        self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
+        self.directions['down'] = True
 
         self.power_up_sfx = pygame.mixer.Sound('data/sfx/power_up.wav')
         self.damage_sfx = pygame.mixer.Sound('data/sfx/damage.wav')
@@ -39,7 +43,7 @@ class Mario(Entity):
         self.load_collision_rect(self.id)
 
     def render(self):
-        if self.invincible_timer > 0 and self.invincible_timer%3 == 0:
+        if self.invisible and self.invincible_timer > 0 and int(self.invincible_timer*30)%3 == 0:
             return
 
         super().render(self.game.screen, self.game.camera.scroll)
@@ -94,7 +98,25 @@ class Mario(Entity):
             self.flicker_timer += 1
 
         if self.invincible_timer > 0:
-            self.invincible_timer -= 1
+            self.invincible_timer -= self.game.dt
+
+            if self.invincible_star:
+                if int(self.invincible_timer) <= 0:
+                    self.id = self.id.split('_star')[0]
+                    self.invincible_star = False
+                    self.invincible_timer = 0
+                    self.current_animation_frame = None
+                elif int(self.invincible_timer*30)%3 == 0:
+                    id = int(self.id.split('_')[-1])
+                    self.id = self.id[:-1]
+                    self.id += str((id+1)%4)
+                    self.current_animation_frame = self.current_animation.frame-self.game.dt
+                elif self.invincible_timer < 2:
+                    self.game.play_music()
+
+            if self.invisible:
+                if int(self.invincible_timer) <= 0:
+                    self.invisible = False
 
         if self.game.paused:
             return
@@ -107,7 +129,7 @@ class Mario(Entity):
         self.hits(self.game.entities.get_enemies())
 
     def hits(self, enemies):
-        if int(self.invincible_timer) > 0:
+        if int(self.invincible_timer) > 0 and not self.invincible_star:
             return
 
         for enemy in enemies:
@@ -134,7 +156,12 @@ class Mario(Entity):
             rect[0] += self.velocity[0]
 
             if rect_rect_collision(rect, enemy.rect):
-                self.change_state('enemy')
+                if self.invincible_star:
+                    enemy.dead = True
+                    enemy.falling = True
+                    enemy.stomp_sfx.play()
+                else:
+                    self.change_state('enemy')
                 return
 
     def movement(self):
@@ -205,7 +232,7 @@ class Mario(Entity):
         if self.current_animation_id.split('_')[-1] == 'shoot' and not int(self.current_animation.frame) == self.current_animation.animation_data.duration():
             return
 
-        self.set_animation(animation_state)
+        self.set_animation(animation_state, self.current_animation_frame)
 
     def change_state(self, type):
         states = json.load(open('data/configs/mario_states.json', 'r'))
@@ -215,15 +242,22 @@ class Mario(Entity):
             self.die()
             return
 
-        if type != 'enemy':
+        if type == 'power_up':
             self.power_up_sfx.play()
-        else:
+        elif type == 'enemy':
             if self.flickering:
                 return
 
             self.damage_sfx.play()
             self.flickering = True
-            self.invincible_timer = 150
+            self.invincible_timer = 5
+            self.invisible = True
+        elif type == 'star':
+            self.invincible_star = True
+            self.invincible_timer = 9
+
+            pygame.mixer.music.load('data/music/star.wav')
+            pygame.mixer.music.play(3)
 
         if current_animation_id in self.animations.animations:
             self.current_animation_id = current_animation_id

@@ -1,4 +1,4 @@
-import pygame, sys, json
+import pygame, sys, json, os
 from .entity_manager import Entity_Manager
 from .animation_handler import Animation_Handler
 from .renderer import Renderer
@@ -8,6 +8,15 @@ from .pipe_guides import Pipe_Guides
 from .lift_spawner import Lift_Spawner_Manager
 
 pygame.init()
+
+# for folder in ['small_mario_star_2_idle', 'small_mario_star_2_run', 'small_mario_star_2_slide', 'small_mario_star_2_jump', 'small_mario_star_3_idle', 'small_mario_star_3_run', 'small_mario_star_3_slide', 'small_mario_star_3_jump']:
+#     folder = 'data/graphics/animations/'+folder
+#     for file in os.listdir(folder):
+#         if file.split('.')[-1] == 'png':
+#             surface = pygame.Surface((16,32))
+#             image = pygame.image.load(folder+'/'+file)
+#             surface.blit(image, (0,16))
+#             pygame.image.save(surface, folder+'/'+file)
 
 class Game:
     def __init__(self):

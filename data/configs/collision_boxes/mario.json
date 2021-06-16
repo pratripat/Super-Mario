@@ -4,10 +4,40 @@
     "offset": [2,18],
     "size": [12,14]
   },
+  "small_mario_star_1": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
+  },
+  "small_mario_star_2": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
+  },
+  "small_mario_star_3": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
+  },
   "mario": {
     "start_offset": [0,0],
     "offset": [2,2],
     "size": [12,30]
+  },
+  "mario_star_1": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
+  },
+  "mario_star_2": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
+  },
+  "mario_star_3": {
+    "start_offset": [0,0],
+    "offset": [2,18],
+    "size": [12,14]
   },
   "fire_mario": {
     "start_offset": [0,0],

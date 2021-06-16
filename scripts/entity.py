@@ -67,7 +67,7 @@ class Entity:
         return hit_list
 
     #Sets the current animation of the entity
-    def set_animation(self, animation):
+    def set_animation(self, animation, frame=None):
         animation = f'{self.id}_{animation}'
 
         if self.current_animation_id == animation:
@@ -76,6 +76,9 @@ class Entity:
         if animation in self.animations.animations:
             self.current_animation = self.animations.get_animation(animation)
             self.current_animation_id = animation
+
+        if frame:
+            self.current_animation.frame = frame
 
     def set_position(self, position):
         self.rect[0] = position[0] + self.offset[0]
