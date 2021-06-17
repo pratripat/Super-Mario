@@ -109,7 +109,7 @@ class Mario(Entity):
                 elif int(self.invincible_timer*30)%3 == 0:
                     id = int(self.id.split('_')[-1])
                     self.id = self.id[:-1]
-                    self.id += str((id+1)%4)
+                    self.id += str((id+1)%5)
                     self.current_animation_frame = self.current_animation.frame-self.game.dt
                 elif self.invincible_timer < 2:
                     self.game.play_music()
@@ -233,6 +233,7 @@ class Mario(Entity):
             return
 
         self.set_animation(animation_state, self.current_animation_frame)
+        self.current_animation_frame = None
 
     def change_state(self, type):
         states = json.load(open('data/configs/mario_states.json', 'r'))
