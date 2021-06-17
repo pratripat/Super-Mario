@@ -9,19 +9,10 @@ from .lift_spawner import Lift_Spawner_Manager
 
 pygame.init()
 
-# for folder in ['small_mario_star_2_idle', 'small_mario_star_2_run', 'small_mario_star_2_slide', 'small_mario_star_2_jump', 'small_mario_star_3_idle', 'small_mario_star_3_run', 'small_mario_star_3_slide', 'small_mario_star_3_jump']:
-#     folder = 'data/graphics/animations/'+folder
-#     for file in os.listdir(folder):
-#         if file.split('.')[-1] == 'png':
-#             surface = pygame.Surface((16,32))
-#             image = pygame.image.load(folder+'/'+file)
-#             surface.blit(image, (0,16))
-#             pygame.image.save(surface, folder+'/'+file)
-
 class Game:
     def __init__(self):
         pygame.display.set_caption('Super Mario')
-        self.screen = pygame.display.set_mode((1200, 900), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((960, 700), pygame.RESIZABLE+pygame.SCALED)
         self.clock = pygame.time.Clock()
         pygame.mouse.set_visible(False)
 
