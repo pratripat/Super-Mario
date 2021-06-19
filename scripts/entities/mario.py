@@ -53,7 +53,7 @@ class Mario(Entity):
 
         if self.dead:
             if not pygame.mixer.music.get_busy():
-                self.game.load_level(self.game.level)
+                self.game.load_level(self.game.level, mario_dead=True)
 
             self.rect[1] += self.velocity[1]
             self.velocity[1] += 0.25
