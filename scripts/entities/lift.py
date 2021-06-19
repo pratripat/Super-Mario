@@ -1,3 +1,4 @@
+from ..animation_handler import Animation, Animation_Data
 from ..entity import Entity
 from ..funcs import *
 import pygame
@@ -10,11 +11,39 @@ class Lift(Entity):
         self.bottom_position = bottom_position
         self.left_position = left_position
         self.right_position = right_position
+        self.loaded = False
 
         if velocity:
             self.velocity = velocity
         else:
             self.load_velocity()
+
+    def load_rect(self):
+        for lift in self.game.entities.lifts[:]:
+            if lift == self:
+                continue
+
+            if lift.position[1] == self.position[1] and lift.position[0]-self.position[0]-self.rect[2] == 0:
+                self.rect[2] += self.game.tilemap.RES
+
+                image = self.current_animation.image
+                img = pygame.transform.scale(image, (image.get_width()//3, image.get_height()//3))
+                surface = pygame.Surface((img.get_width()+self.game.tilemap.RES//3, img.get_height()))
+
+                surface.blit(img, (0,0))
+                surface.blit(img, (img.get_width(), 0))
+
+                surface.set_colorkey((0,0,0))
+
+                animation_data = Animation_Data(f'data/graphics/animations/lift_')
+                animation_data.images.clear()
+                animation_data.images.append(surface)
+                animation_data.config['frames'] = [5]
+                animation_data.config['loop'] = False
+                self.current_animation = Animation(animation_data)
+
+                if lift in self.game.entities.lifts:
+                    self.game.entities.lifts.remove(lift)
 
     def load_velocity(self):
         indicators = self.game.tilemap.get_tiles_with_position('lift_indicators', self.position)
@@ -100,6 +129,10 @@ class Lift(Entity):
         super().render(self.game.screen, self.game.camera.scroll)
 
     def update(self):
+        if not self.loaded:
+            self.load_rect()
+            self.loaded = True
+
         super().update(self.game.dt)
         self.move([], self.game.dt)
 

@@ -1,7 +1,7 @@
 {
   "id": "ground",
   "filename": "data/graphics/spritesheet/tiles.png",
-  "indexes": [0, 1, 5, 6, 10, 11, 12, 14, 15, 17],
+  "indexes": [0, 1, 5, 6, 10, 11, 12, 14, 15, 16, 18, 19],
   "resize": true,
   "scale": 3,
   "autotile_config": null

@@ -29,11 +29,14 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None):
-        try:
-            self.mario_data = self.entities.mario.id
-        except:
+    def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
+        if mario_dead:
             self.mario_data = 'small_mario'
+        else:
+            try:
+                self.mario_data = self.entities.mario.id
+            except:
+                self.mario_data = 'small_mario'
 
         self.level = level
 
@@ -111,7 +114,7 @@ class Game:
         pygame.mixer.music.load('data/music/main_theme.wav')
         pygame.mixer.music.play(-1)
 
-        if 'background' not in [entity['id'] for entity in self.tilemap.entities]:
+        if 'background_color' not in [entity['id'] for entity in self.tilemap.entities]:
             pygame.mixer.music.load('data/music/underground.wav')
             pygame.mixer.music.play(-1)
 
