@@ -140,7 +140,6 @@ class Mario(Entity):
                 continue
 
             rect = self.rect.copy()
-            rect2 = enemy.rect.copy()
             if enemy.current_animation_id == f'{self.game.world_type}_koopa_idle' or enemy.current_animation_id == 'red_koopa_idle':
                 rect[0] += self.velocity[0]
                 rect[1] += self.velocity[1]
@@ -161,6 +160,23 @@ class Mario(Entity):
                     enemy.falling = True
                     enemy.stomp_sfx.play()
                 else:
+                    self.change_state('enemy')
+                return
+
+        for firebar in self.game.entities.firebars:
+            for fireball in firebar.fireballs:
+                fireball_rect = fireball.rect.copy()
+                fireball_rect[0] += firebar.position[0]
+                fireball_rect[1] += firebar.position[1]
+
+                if rect_rect_collision(self.rect, fireball_rect):
+                    if not self.invincible_star:
+                        self.change_state('enemy')
+                    return
+
+        for firebreathe in self.game.entities.firebreathes:
+            if rect_rect_collision(self.rect, firebreathe.rect):
+                if not self.invincible_star:
                     self.change_state('enemy')
                 return
 

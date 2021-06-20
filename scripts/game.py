@@ -111,12 +111,8 @@ class Game:
                     self.entities.mario.running = False
 
     def play_music(self):
-        pygame.mixer.music.load('data/music/main_theme.wav')
+        pygame.mixer.music.load(f'data/music/{self.world_type}.wav')
         pygame.mixer.music.play(-1)
-
-        if 'background_color' not in [entity['id'] for entity in self.tilemap.entities]:
-            pygame.mixer.music.load('data/music/underground.wav')
-            pygame.mixer.music.play(-1)
 
     def main_loop(self):
         while True:
