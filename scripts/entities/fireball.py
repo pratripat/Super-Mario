@@ -11,9 +11,10 @@ class Fireball(Entity):
 
         if flipped:
             self.velocity[0] *= -1
+            self.flipped = True
 
-    def render(self):
-        super().render(self.game.screen, self.game.camera.scroll)
+    def render(self, surface=None, scroll=None):
+        super().render(surface or self.game.screen, scroll or self.game.camera.scroll)
 
     def update(self):
         super().update(self.game.dt)

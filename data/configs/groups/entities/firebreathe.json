@@ -1,0 +1,8 @@
+{
+  "id": "firebreathe",
+  "filename": "data/graphics/spritesheet/firebreathe.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

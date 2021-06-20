@@ -9,6 +9,8 @@ from .entities.piranha_plant import Piranha_Plant
 from .entities.flagpole import Flagpole
 from .entities.coin import Coin
 from .entities.lift import Lift
+from .entities.firebar import Firebar
+from .entities.fire_breathe import Firebreathe
 from .funcs import *
 import pygame
 
@@ -33,6 +35,8 @@ class Entity_Manager:
         self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('koopa_flying')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Red_Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('red_koopa_flying')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]
         self.coins = [Coin(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('coin')]
         self.lifts = [Lift(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('lift')]
+        self.firebars = [Firebar(self.game, tile['id'], tile['position'], tile['index']) for tile in self.game.tilemap.get_tiles_with_id('firebar_6')]
+        self.firebreathes = [Firebreathe(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('firebreathe')]
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
@@ -70,6 +74,12 @@ class Entity_Manager:
                 animation = self.game.animations.get_animation('blast')
                 self.animations[animation] = fireball.center
 
+        for firebar in self.firebars:
+            firebar.update()
+
+        for firebreathe in self.firebreathes:
+            firebreathe.update()
+
         for piece in self.brick_pieces[:]:
             piece.update()
             if piece.offscreen:
@@ -82,7 +92,7 @@ class Entity_Manager:
 
         for lift in self.lifts[:]:
             lift.update()
-            if lift.offscreen:
+            if lift.offscreen and lift in self.lifts:
                 self.lifts.remove(lift)
 
         for coin in self.coins[:]:
@@ -124,6 +134,12 @@ class Entity_Manager:
 
         for piece in self.brick_pieces:
             piece.render()
+
+        for firebar in self.firebars:
+            firebar.render()
+
+        for firebreathe in self.firebreathes:
+            firebreathe.render()
 
         for fireball in self.fireballs:
             fireball.render()
