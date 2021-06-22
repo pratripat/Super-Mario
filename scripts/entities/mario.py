@@ -7,8 +7,6 @@ class Mario(Entity):
     def __init__(self, game, rect, id, transition_velocity):
         super().__init__(game.animations, id, list(rect.topleft), 'idle')
         self.game = game
-        self.speed = 4
-        self.airtimer = 0
         self.dead = False
         self.running = False
         self.invisible = False
@@ -17,9 +15,12 @@ class Mario(Entity):
         self.pipe_transition = False
         self.invincible_star = False
         self.current_animation_frame = None
+        self.speed = 4
+        self.airtimer = 0
         self.flicker_timer = 0
         self.invincible_timer = 0
         self.pipe_transition_timer = 0
+        self.star_animation_number = 0
         self.pipe_transition_velocity = [0,0]
         self.pipe_transition_velocity_2 = [0,0]
 
@@ -102,15 +103,14 @@ class Mario(Entity):
 
             if self.invincible_star:
                 if int(self.invincible_timer) <= 0:
-                    self.id = self.id.split('_star')[0]
                     self.invincible_star = False
                     self.invincible_timer = 0
                     self.current_animation_frame = None
                 elif int(self.invincible_timer*30)%3 == 0:
-                    id = int(self.id.split('_')[-1])
-                    self.id = self.id[:-1]
-                    self.id += str((id+1)%5)
                     self.current_animation_frame = self.current_animation.frame-self.game.dt
+                    self.star_animation_number += 1
+                    self.star_animation_number %= 5
+
                 elif self.invincible_timer < 2:
                     self.game.play_music()
 
@@ -248,14 +248,24 @@ class Mario(Entity):
         if self.current_animation_id.split('_')[-1] == 'shoot' and not int(self.current_animation.frame) == self.current_animation.animation_data.duration():
             return
 
+        if self.invincible_star:
+            animation_state = f'star_{self.star_animation_number}_' + animation_state
+
         self.set_animation(animation_state, self.current_animation_frame)
+
         self.current_animation_frame = None
 
     def change_state(self, type):
         states = json.load(open('data/configs/mario_states.json', 'r'))
-        current_animation_id = f'{self.id}_to_{states[type][self.id]}'
 
-        if states[type][self.id] == 'none':
+        try:
+            new_id = states[type][self.id]
+        except:
+            new_id = self.id
+
+        current_animation_id = f'{self.id}_to_{new_id}'
+
+        if new_id == 'none':
             self.die()
             return
 
@@ -282,7 +292,7 @@ class Mario(Entity):
 
             self.game.paused = True
 
-        self.id = states[type][self.id]
+        self.id = new_id
 
         self.load_collision_rect(self.id)
 

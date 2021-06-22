@@ -18,7 +18,7 @@ class Enemy(Entity):
     def render(self):
         super().render(self.game.screen, self.game.camera.scroll, vertical_flip=self.falling)
 
-    def update(self, function=None, enemies=True, collisions=True):
+    def update(self, function=None, enemies=True, collisions=True, lifts=True):
         if not self.active:
             if self.on_screen:
                 self.active = True
@@ -52,7 +52,7 @@ class Enemy(Entity):
             return
 
         self.movement()
-        self.move(enemies, collisions)
+        self.move(enemies, collisions, lifts)
 
         if not self.stompable:
             return
@@ -71,16 +71,16 @@ class Enemy(Entity):
                 self.game.entities.mario.rect[1] -= self.game.entities.mario.velocity[1]
                 self.game.entities.mario.velocity[1] *= -1
 
-    def move(self, enemies, collisions):
+    def move(self, enemies, collisions, lifts):
         if collisions:
-            super().move(self.game.entities.get_colliding_entities(entity=self, enemies=enemies), self.game.dt)
+            super().move(self.game.entities.get_colliding_entities(entity=self, enemies=enemies, lifts=lifts), self.game.dt)
             return
 
         self.rect[0] += self.velocity[0]
         self.rect[1] += self.velocity[1]
 
     def movement(self):
-        if self.collisions['bottom']:
+        if self.collisions['bottom'] and self.gravity:
             self.velocity[1] = 1
 
         if self.collisions['right'] or self.collisions['left']:
@@ -93,6 +93,8 @@ class Enemy(Entity):
 
         if self.gravity:
             self.velocity[1] += 1
+
+        self.velocity[1] = min(self.velocity[1], 8)
 
     @property
     def on_screen(self):

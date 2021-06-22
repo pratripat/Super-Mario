@@ -20,7 +20,7 @@ class Entity:
     def render(self, surface, scroll=[0,0], colorkey=None, vertical_flip=False):
         self.current_animation.render(surface, (self.position[0]-scroll[0], self.position[1]-scroll[1]), [self.flipped, vertical_flip], colorkey)
 
-        # pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
+        pygame.draw.rect(surface, (255,0,0), [self.rect[0]-scroll[0], self.rect[1]-scroll[1], self.rect[2], self.rect[3]])
 
     #Updates the animation
     def update(self, dt):
