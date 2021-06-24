@@ -26,6 +26,7 @@ class Koopa(Enemy):
         if self.collisions['bottom']:
             self.flying_timer = self.max_flying_timer
             self.gravity = False
+            self.velocity[1] = 0
 
         if self.flying_timer > 0:
             self.flying_timer -= 1

@@ -14,8 +14,13 @@ class Firebreathe:
         data = json.load(open('data/configs/collision_boxes/firebreathe.json', 'r'))
         self.rect = pygame.Rect(self.position[0] + (data['offset'][0]*scale), self.position[1] + (data['offset'][1]*scale), data['size'][0]*scale, data['size'][1]*scale)
 
+        if self.velocity[0] > 0:
+            self.rect[0] += data['offset'][0]*scale
+
     def render(self):
         self.animation.render(self.game.screen, [self.position[0]-self.game.camera.scroll[0], self.position[1]-self.game.camera.scroll[1]], flipped=[self.velocity[0]>0, False])
+
+        # pygame.draw.rect(self.game.screen, (255,0,0), [self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.game.camera.scroll[1], self.rect[2], self.rect[3]])
 
     def update(self):
         if not self.on_screen:
