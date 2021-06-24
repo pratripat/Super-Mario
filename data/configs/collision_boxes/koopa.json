@@ -2,36 +2,36 @@
   "koopa_flying": {
     "start_offset": [0,-8],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "koopa_moving": {
     "start_offset": [0,-8],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "koopa_idle": {
     "start_offset": [0,0],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "koopa_rolling": {
     "start_offset": [0,0],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "red_koopa_moving": {
     "start_offset": [0,0],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "red_koopa_idle": {
     "start_offset": [0,0],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   },
   "red_koopa_rolling": {
     "start_offset": [0,0],
     "offset": [2,10],
-    "size": [12,14]
+    "size": [12,13]
   }
 }

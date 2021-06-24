@@ -21,7 +21,10 @@ class Entity_Manager:
         self.load_entities(position, transition_velocity)
 
     def load_entities(self, position, transition_velocity):
-        mario_rect = self.game.tilemap.get_rects_with_id('mario')[0]
+        try:
+            mario_rect = self.game.tilemap.get_rects_with_id('mario')[0]
+        except:
+            mario_rect = pygame.Rect(*position,10,10)
 
         try:
             self.flagpole = Flagpole(self.game, self.game.tilemap.get_rects_with_id('flagpole')[0])

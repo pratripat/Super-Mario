@@ -6,6 +6,7 @@ class Star(Mushroom):
     def __init__(self, game, position):
         super().__init__(game, position, f'{game.world_type}_star')
         self.game = game
+        self.speed = 3
         self.max_flying_timer = 30
         self.flying_timer = self.max_flying_timer
         self.flying = True
