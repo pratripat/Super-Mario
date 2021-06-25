@@ -1,0 +1,8 @@
+{
+  "id": "axe",
+  "filename": "data/graphics/spritesheet/axe.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

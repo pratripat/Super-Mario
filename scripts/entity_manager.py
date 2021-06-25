@@ -12,6 +12,7 @@ from .entities.lift import Lift
 from .entities.firebar import Firebar
 from .entities.fire_breathe import Firebreathe
 from .entities.bowser import Bowser
+from .entities.axe import Axe
 from .funcs import *
 import pygame
 
@@ -40,6 +41,7 @@ class Entity_Manager:
         self.lifts = [Lift(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('lift')]
         self.firebars = [Firebar(self.game, tile['id'], tile['position'], tile['index']) for tile in self.game.tilemap.get_tiles_with_id('firebar_6')]
         self.firebreathes = [Firebreathe(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('firebreathe')]
+        self.axes = [Axe(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('axe')]
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
@@ -104,6 +106,9 @@ class Entity_Manager:
                 coin.coin_sfx.play()
                 self.coins.remove(coin)
 
+        for axe in self.axes:
+            axe.update()
+
         delete_list = []
         for animation, position in self.animations.items():
             animation.run(self.game.dt)
@@ -128,6 +133,9 @@ class Entity_Manager:
 
         for lift in self.lifts:
             lift.render()
+
+        for axe in self.axes:
+            axe.render()
 
         for coin in self.coins:
             coin.render()
@@ -193,4 +201,4 @@ class Entity_Manager:
         return colliding_blocks
 
     def get_enemies(self):
-        return self.enemies
+        return self.enemies    

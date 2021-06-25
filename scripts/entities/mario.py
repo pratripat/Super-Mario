@@ -185,7 +185,7 @@ class Mario(Entity):
         acceleration = 0.15
 
         if self.running:
-            speed = 7
+            speed = 7.5
 
         animation_state = 'idle'
 

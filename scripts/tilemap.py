@@ -108,9 +108,11 @@ class Tilemap:
         return rects
 
     #Removes a entity from given position and layer
-    def remove_entity(self, pos, layer=None):
+    def remove_entity(self, id, pos=None, layer=None):
         for entity in self.entities[:]:
-            if entity['position'] == pos:
+            if entity['id'] == id:
                 if layer != None and entity['layer'] != layer:
+                    continue
+                if pos != None and entity['position'] != pos:
                     continue
                 self.entities.remove(entity)
