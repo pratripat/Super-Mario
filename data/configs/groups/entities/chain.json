@@ -1,0 +1,8 @@
+{
+  "id": "chain",
+  "filename": "data/graphics/spritesheet/chain.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

@@ -25,6 +25,11 @@ class Bowser(Enemy):
     def update(self):
         super().update(function=self.hurt_mario, enemies=False, lifts=False)
 
+        if self.dead:
+            return
+
+        animation_state = 'walk'
+
         if self.on_screen:
             self.horizontal_movement_counter -= self.game.dt
             self.jump_counter -= self.game.dt
@@ -37,6 +42,9 @@ class Bowser(Enemy):
             if self.jump_counter <= 0 and not self.jumping:
                 self.jumping = True
                 self.airtimer = 0
+
+            if self.fire_counter <= 1:
+                animation_state = 'fire'
 
             if self.fire_counter <= 0:
                 self.fire()
@@ -59,6 +67,8 @@ class Bowser(Enemy):
             self.offset[0] = 0
         else:
             self.offset[0] = self.initial_offset[0]
+
+        self.set_animation(animation_state)
 
     def hurt_mario(self):
         self.game.entities.mario.change_state('enemy')
