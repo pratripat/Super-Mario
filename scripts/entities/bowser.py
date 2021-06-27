@@ -53,7 +53,7 @@ class Bowser(Enemy):
 
             if self.jumping:
                 if self.airtimer < 27:
-                    self.velocity[1] -= 1.9*(27-self.airtimer)/80
+                    self.velocity[1] -= 1.9*(27-self.airtimer)/self.game.framerate
                     self.airtimer += 1
                 else:
                     self.jumping = False

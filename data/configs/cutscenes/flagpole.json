@@ -1,0 +1,5 @@
+{
+  "sequential_commands": [
+    {"entity": "mario", "entity_speed": 4, "target_position": [7, 0]}
+  ]
+}

@@ -8,6 +8,7 @@ class Firebar:
         self.game = game
         self.index = index
         self.angle = 0
+        self.speed = 0.02
         self.n = int(self.id[-1])
         self.position = [position[0]+self.game.tilemap.RES//2, position[1]+self.game.tilemap.RES//2]
         self.fireballs = [Fireball(self.game, [self.game.tilemap.RES//2*i, 0], False) for i in range(self.n)]
@@ -26,9 +27,9 @@ class Firebar:
 
     def update(self):
         if self.index%2 == 0:
-            self.angle += 0.03
+            self.angle += self.speed
         else:
-            self.angle -= 0.03
+            self.angle -= self.speed
 
         for i, fireball in enumerate(self.fireballs):
             px, py = fireball.position
