@@ -13,8 +13,8 @@ class Brick_Piece:
         self.game.screen.blit(self.image, [self.position[0]-self.game.camera.scroll[0], self.position[1]-self.game.camera.scroll[1]])
 
     def update(self):
-        self.position[0] += (self.velocity[0]*self.game.dt*80)
-        self.position[1] += (self.velocity[1]*self.game.dt*80)
+        self.position[0] += (self.velocity[0]*self.game.dt*self.game.framerate)
+        self.position[1] += (self.velocity[1]*self.game.dt*self.game.framerate)
 
         self.velocity[1] += 0.2
 

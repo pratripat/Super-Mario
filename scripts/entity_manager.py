@@ -56,7 +56,7 @@ class Entity_Manager:
 
         self.mario.run()
 
-        if self.game.paused or self.game.level_finished:
+        if self.game.paused or self.game.flag_animation:
             return
 
         for enemy in self.enemies[:]:
@@ -201,4 +201,4 @@ class Entity_Manager:
         return colliding_blocks
 
     def get_enemies(self):
-        return self.enemies    
+        return self.enemies

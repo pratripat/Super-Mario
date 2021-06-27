@@ -61,7 +61,7 @@ class Mario(Entity):
 
             return
 
-        if self.game.level_finished:
+        if self.game.flag_animation:
             return
 
         if int(self.current_animation.frame) == self.current_animation.animation_data.duration():

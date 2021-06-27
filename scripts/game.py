@@ -6,6 +6,7 @@ from .tilemap import Tilemap
 from .camera import Camera
 from .pipe_guides import Pipe_Guides
 from .lift_spawner import Lift_Spawner_Manager
+from .cutscene_manager import Cutscene
 
 pygame.init()
 
@@ -14,6 +15,7 @@ class Game:
         pygame.display.set_caption('Super Mario')
         self.screen = pygame.display.set_mode((960, 700), pygame.RESIZABLE+pygame.SCALED)
         self.clock = pygame.time.Clock()
+        self.framerate = 80
         pygame.mouse.set_visible(False)
 
         self.animations = Animation_Handler()
@@ -30,6 +32,12 @@ class Game:
         return 1/self.clock.get_fps()
 
     def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
+        self.paused = False
+        self.flag_animation = False
+        self.playing_cutscene = False
+        self.cutscene = None
+        self.cutscene_path = None
+
         if mario_dead:
             self.mario_data = 'small_mario'
         else:
@@ -41,7 +49,8 @@ class Game:
         self.level = level
 
         if not filepath:
-            level, self.world_type = json.load(open('data/levels/level_order.json', 'r'))[level]
+            level, self.world_type, self.cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
+
         else:
             level = filepath
             self.world_type = world_type
@@ -56,16 +65,26 @@ class Game:
         self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
         self.camera.set_target(self.entities.mario)
 
-        self.paused = False
-        self.level_finished = False
-
         self.play_music()
 
+        if self.cutscene_path:
+            self.load_cutscene(self.cutscene_path)
+
     def run(self):
-        self.clock.tick(80)
+        self.clock.tick(self.framerate)
 
         if self.clock.get_fps() < 30:
             return
+
+        if self.playing_cutscene:
+            self.cutscene.update()
+
+        if self.playing_cutscene and self.cutscene.finished:
+            if self.cutscene.function:
+                self.cutscene.function(*self.cutscene.args)
+
+            self.playing_cutscene = False
+            self.cutscene = None
 
         self.camera.update(self.screen, self.tilemap)
         self.lift_spawners.update()
@@ -80,6 +99,9 @@ class Game:
                 sys.exit()
 
             if event.type == pygame.KEYDOWN:
+                if self.playing_cutscene:
+                    continue
+
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit()
                     sys.exit()
@@ -113,6 +135,16 @@ class Game:
     def play_music(self):
         pygame.mixer.music.load(f'data/music/{self.world_type}.wav')
         pygame.mixer.music.play(-1)
+
+    def load_cutscene(self, path, function=None, args=[]):
+        data = json.load(open(path, 'r'))
+        data['sequential_commands'][0]['target_position'][0] *= self.tilemap.RES
+        data['sequential_commands'][0]['target_position'][0] += self.entities.mario.position[0]
+
+        self.playing_cutscene = True
+        self.cutscene = Cutscene({'mario':self.entities.mario}, **data, function=function, args=args)
+
+        print(data)
 
     def main_loop(self):
         while True:
