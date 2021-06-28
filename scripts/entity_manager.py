@@ -47,6 +47,8 @@ class Entity_Manager:
         self.fireballs = []
         self.coin_animations = []
         self.animations = {}
+        self.breaking_bridge = False
+        self.waiting_timer = 0
 
     def run(self):
         self.update_pipe_transitions()
@@ -55,6 +57,9 @@ class Entity_Manager:
             self.flagpole.run()
 
         self.mario.run()
+
+        if self.breaking_bridge:
+            self.break_bridge()
 
         if self.game.paused or self.game.flag_animation:
             return
@@ -165,6 +170,28 @@ class Entity_Manager:
             self.flagpole.render()
 
         self.mario.render()
+
+    def break_bridge(self):
+        self.game.paused = True
+
+        if self.waiting_timer > 0:
+            self.waiting_timer -= 1
+            return
+
+        bridge_positions = sorted([tile['position'] for tile in self.game.tilemap.get_tiles_with_id('ground') if tile['index'] == 14])
+
+        if len(bridge_positions) > 0:
+            self.game.tilemap.remove_entity('ground', pos=bridge_positions[-1])
+            self.waiting_timer = 10
+            self.game.camera.scroll[0] -= 4
+        else:
+            self.breaking_bridge = False
+            self.game.paused = False
+
+            for enemy in self.game.entities.enemies:
+                enemy.dead = enemy.falling = True
+
+            self.game.load_cutscene('data/configs/cutscenes/castle_clear.json', self.game.load_level, [self.game.level+1])
 
     def update_pipe_transitions(self):
         for (file_path, position, world_type, direction1, direction2), rect in self.game.pipe_guides.rects.items():

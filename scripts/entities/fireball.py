@@ -33,8 +33,13 @@ class Fireball(Entity):
 
     def hits(self):
         for enemy in self.game.entities.enemies:
-            if rect_rect_collision(self.rect, enemy.rect):
-                enemy.dead = True
-                enemy.remove = True
-                self.remove = True
-                return
+            if enemy.id != 'bowser' or (enemy.id == 'bowser' and enemy.fireball_hits <= 0):
+                if rect_rect_collision(self.rect, enemy.rect):
+                    enemy.dead = True
+                    enemy.remove = True
+                    self.remove = True
+                    return
+            else:
+                if rect_rect_collision(self.rect, enemy.rect) or rect_rect_collision(self.rect, enemy.head_rect):
+                    enemy.fireball_hits -= 1
+                    self.remove = True

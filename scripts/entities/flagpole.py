@@ -16,8 +16,6 @@ class Flagpole:
     def render(self):
         self.game.screen.blit(self.flag_image, (self.flag_position[0]-self.game.camera.scroll[0], self.flag_position[1]-self.game.camera.scroll[1]))
 
-        pygame.draw.rect(self.game.screen, (255,0,0), (self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.game.camera.scroll[1], self.rect[2], self.rect[3]))
-
     def run(self):
         if self.game.playing_cutscene:
             return
@@ -60,7 +58,7 @@ class Flagpole:
             pygame.mixer.music.load('data/music/stage_clear.wav')
             pygame.mixer.music.play()
 
-            self.game.entities.mario.rect[1] = self.rect[1]+self.rect[3]-rect[3]
+            self.game.entities.mario.rect[1] = self.flag_position[1]
             self.game.entities.mario.velocity[1] = -1
             self.flag_taken_down = True
 

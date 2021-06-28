@@ -1,5 +1,5 @@
 {
   "sequential_commands": [
-    {"entity": "mario", "entity_speed": 4, "target_position": [8, 0]}
+    {"entity": "mario", "entity_speed": 2, "target_position": [8, 0]}
   ]
 }

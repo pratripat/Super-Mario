@@ -163,6 +163,16 @@ class Mario(Entity):
                     self.change_state('enemy')
                 return
 
+            if enemy.id == 'bowser':
+                if rect_rect_collision(rect, enemy.head_rect):
+                    if self.invincible_star:
+                        enemy.dead = True
+                        enemy.falling = True
+                        enemy.stomp_sfx.play()
+                    else:
+                        self.change_state('enemy')
+                    return
+
         for firebar in self.game.entities.firebars:
             for fireball in firebar.fireballs:
                 fireball_rect = fireball.rect.copy()
@@ -188,6 +198,11 @@ class Mario(Entity):
             speed = 7.5
 
         animation_state = 'idle'
+
+        if self.collisions['left'] or self.collisions['right']:
+            self.velocity[0] = 0
+        if self.collisions['top']:
+            self.velocity[1] = 0
 
         if self.collisions['bottom']:
             self.airtimer = 0

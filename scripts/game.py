@@ -33,6 +33,7 @@ class Game:
 
     def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
         self.paused = False
+        self.castle_clear = False
         self.flag_animation = False
         self.playing_cutscene = False
         self.cutscene = None
@@ -83,8 +84,9 @@ class Game:
             if self.cutscene.function:
                 self.cutscene.function(*self.cutscene.args)
 
-            self.playing_cutscene = False
-            self.cutscene = None
+            if self.cutscene and self.cutscene.finished:
+                self.playing_cutscene = False
+                self.cutscene = None
 
         self.camera.update(self.screen, self.tilemap)
         self.lift_spawners.update()
@@ -143,8 +145,6 @@ class Game:
 
         self.playing_cutscene = True
         self.cutscene = Cutscene({'mario':self.entities.mario}, **data, function=function, args=args)
-
-        print(data)
 
     def main_loop(self):
         while True:

@@ -31,7 +31,6 @@ class Cutscene:
 
         if len(self.sequential_commands) == 0 and len(self.independent_commands) == 0:
             self.finished = True
-            print('finished cutscene')
 
 class Command:
     def __init__(self, entity, entity_speed, target_position):

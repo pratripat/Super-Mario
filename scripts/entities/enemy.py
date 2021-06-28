@@ -6,6 +6,7 @@ class Enemy(Entity):
         super().__init__(game.animations, type, position, animation_id)
         self.velocity[0] = -1
         self.game = game
+        self.start_position = position
         self.dead = False
         self.remove = False
         self.active = False
