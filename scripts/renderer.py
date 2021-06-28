@@ -13,7 +13,7 @@ class Renderer:
     def render(self):
         self.game.screen.fill(self.background_color)
         self.render_tiles_with_id(['decorations', 'background'])
-        self.render_tiles_with_id(['castle', 'ground', 'chain'])
+        self.render_tiles_with_id(['castle', 'ground', 'chain', 'toad', 'princess'])
         self.game.entities.render()
         self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
 

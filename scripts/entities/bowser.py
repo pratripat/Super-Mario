@@ -8,6 +8,7 @@ class Bowser(Enemy):
         self.horizontal_movement_counter = 2
         self.jump_counter = 1.5
         self.fire_counter = 3
+        self.fireball_hits = 4
         self.airtimer = 0
         self.jumping = False
         self.gravity = False
@@ -21,6 +22,8 @@ class Bowser(Enemy):
 
         self.offset = [data['start_offset'][0]*scale, data['start_offset'][1]*scale]
         self.initial_offset = self.offset.copy()
+
+        self.head_rect = pygame.Rect(*self.position, *self.rect.size)
 
     def update(self):
         super().update(function=self.hurt_mario, enemies=False, lifts=False)
@@ -43,7 +46,7 @@ class Bowser(Enemy):
                 self.jumping = True
                 self.airtimer = 0
 
-            if self.fire_counter <= 1:
+            if self.fire_counter <= 0.5:
                 animation_state = 'fire'
 
             if self.fire_counter <= 0:
@@ -67,6 +70,9 @@ class Bowser(Enemy):
             self.offset[0] = 0
         else:
             self.offset[0] = self.initial_offset[0]
+
+        self.head_rect[0] = self.position[0]
+        self.head_rect[1] = self.position[1]
 
         self.set_animation(animation_state)
 
