@@ -52,10 +52,16 @@ class Entity:
                 self.collisions['top'] = True
 
         if tilemap:
+            axe = self.game.tilemap.get_tiles_with_id('axe')
+            right = tilemap.right
+
+            if len(axe):
+                right = axe[0]['position'][0]+axe[0]['dimensions'][0]+tilemap.RES//2
+
             if self.rect[0] < tilemap.left:
                 self.rect[0] = tilemap.left
-            if self.rect[0] > tilemap.right-self.get_width():
-                self.rect[0] = tilemap.right-self.get_width()
+            if self.rect[0] > right-self.get_width():
+                self.rect[0] = right-self.get_width()
 
     #Returns the rects the player is colliding with
     def get_colliding_objects(self, objs):

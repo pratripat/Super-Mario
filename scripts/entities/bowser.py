@@ -55,8 +55,8 @@ class Bowser(Enemy):
             self.flip(self.game.entities.mario.center[0] < self.center[0])
 
             if self.jumping:
-                if self.airtimer < 27:
-                    self.velocity[1] -= 1.9*(27-self.airtimer)/self.game.framerate
+                if self.airtimer < 28:
+                    self.velocity[1] -= 1.9*(28-self.airtimer)/self.game.framerate
                     self.airtimer += 1
                 else:
                     self.jumping = False

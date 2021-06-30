@@ -188,8 +188,10 @@ class Entity_Manager:
             self.breaking_bridge = False
             self.game.paused = False
 
-            for enemy in self.game.entities.enemies:
+            for enemy in self.enemies:
                 enemy.dead = enemy.falling = True
+
+            self.firebreathes.clear()
 
             self.game.load_cutscene('data/configs/cutscenes/castle_clear.json', self.game.load_level, [self.game.level+1])
 

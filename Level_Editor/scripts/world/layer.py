@@ -20,21 +20,25 @@ class Layer:
         if self.undo_cooldown > 0:
             self.undo_cooldown -= 1
 
-    def add_image(self, position, selection):
+    def add_image(self, position, selection=None, data=None):
         #Adds an image if there is already a selected image from the selector panel
-        if selection:
+        if selection or data:
             j, i = (position[0]+self.editor.world.scroll[0])//self.editor.res, (position[1]+self.editor.world.scroll[1])//self.editor.res
-            offset = selection.offset
+
+            if selection:
+                offset = selection.offset
+            else:
+                offset = [0,0]
 
             image = self.get_image_with_index(i, j)
 
             if image:
-                img = Image(self.editor, j, i, j*self.editor.res, i*self.editor.res, offset, selection=selection)
+                img = Image(self.editor, j, i, j*self.editor.res, i*self.editor.res, offset, data=data, selection=selection)
                 self.images.append(img)
                 self.images.remove(image)
                 return img
             else:
-                image = Image(self.editor, j, i, j*self.editor.res, i*self.editor.res, offset, selection=selection)
+                image = Image(self.editor, j, i, j*self.editor.res, i*self.editor.res, offset, data=data, selection=selection)
                 self.images.append(image)
                 return image
 
