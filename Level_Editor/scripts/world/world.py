@@ -8,6 +8,7 @@ class World:
     def __init__(self, editor):
         self.editor = editor
         self.scroll = [0,0]
+        self.copied_data = []
         self.rectangle = Rectangle(editor)
         self.layers = [Layer(editor, 0)]
         self.current_layer = self.layers[0]
@@ -38,7 +39,7 @@ class World:
 
             j, i = (position[0]+self.editor.world.scroll[0])//self.editor.res, (position[1]+self.editor.world.scroll[1])//self.editor.res
             self.editor.screen.blit(surface, ((j*self.editor.res-self.editor.world.scroll[0]), (i*self.editor.res-self.editor.world.scroll[1])))
-            
+
     def run(self, clicked, position, selection):
         #Removes the rectangle and adds an image
         if not clicked:
@@ -64,6 +65,34 @@ class World:
     def undo(self):
         #Undos something in the current layer
         self.current_layer.undo()
+
+    def copy(self):
+        #If there is a rectangle, store the copied images locally
+        if not len(self.rectangle.ending_location):
+            return
+
+        self.copied_data = self.get_images_within_rectangle()
+
+    def paste(self, mouse):
+        #Find the offset between mouse position and the top left image position
+        position = sorted([image.position for image in self.copied_data])[0]
+
+        offset = [mouse[0]-position[0], mouse[1]-position[1]]
+
+        #Make new images from the copied images, at the mouse position
+        for image in self.copied_data:
+            image_position = [image.position[0]+offset[0], image.position[1]+offset[1]]
+
+            data = {
+                'id': image.id,
+                'filepath': image.filepath,
+                'group_name': image.group_name,
+                'image': image.image,
+                'index': image.index,
+                'scale':image.scale
+            }
+
+            self.current_layer.add_image(image_position, data=data)
 
     def create_rectangle(self, position, clicked):
         #Creates rectangle

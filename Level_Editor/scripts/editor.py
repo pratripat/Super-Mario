@@ -64,6 +64,10 @@ class Editor:
             self.world.fill(mouse_position, self.selection_panel.get_current_selection())
         if ctrl_key and keys[pygame.K_z]:
             self.world.undo()
+        if ctrl_key and keys[pygame.K_c]:
+            self.world.copy()
+        if ctrl_key and keys[pygame.K_v]:
+            self.world.paste(mouse_position)
         if ctrl_key and keys[pygame.K_t]:
             self.world.autotile(self.selection_panel)
         if ctrl_key and keys[pygame.K_s]:

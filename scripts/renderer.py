@@ -7,7 +7,7 @@ class Renderer:
 
     def refresh(self):
         self.background_color = (0,0,0)
-        if 'background_color' in [entity['id'] for entity in self.game.tilemap.entities]:
+        if self.game.world_type == 'overworld':
             self.background_color = (107, 139, 255)
 
     def render(self):
