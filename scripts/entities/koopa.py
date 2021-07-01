@@ -8,7 +8,7 @@ class Koopa(Enemy):
         self.load_collision_rect()
 
         if animation == 'flying':
-            self.max_flying_timer = 100
+            self.max_flying_timer = 50
             self.flying_timer = self.max_flying_timer
             self.flying = True
 

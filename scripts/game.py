@@ -131,6 +131,7 @@ class Game:
                     self.entities.mario.directions['right'] = False
                 if event.key == pygame.K_s or event.key == pygame.K_DOWN:
                     self.entities.mario.crouching = False
+                    self.entities.mario.load_collision_rect(self.entities.mario.id)
                 if event.key == pygame.K_LSHIFT or event.key == pygame.K_RSHIFT:
                     self.entities.mario.running = False
 

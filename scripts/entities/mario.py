@@ -128,6 +128,12 @@ class Mario(Entity):
         self.movement()
         self.hits(self.game.entities.get_enemies())
 
+        if self.crouching and self.current_animation_id == self.id + '_crouching':
+            if self.id == 'small_mario':
+                self.crouching = False
+            else:
+                self.load_collision_rect(self.current_animation_id)
+
     def hits(self, enemies):
         if int(self.invincible_timer) > 0 and not self.invincible_star:
             return
@@ -210,7 +216,7 @@ class Mario(Entity):
         elif self.airtimer == 0:
             self.airtimer = 15
 
-        if self.directions['left'] and not self.directions['right'] and not self.crouching:
+        if self.directions['left'] and not self.directions['right']:
             animation_state = 'run'
             self.velocity[0] -= acceleration
             self.velocity[0] = max(-speed, self.velocity[0])
@@ -219,7 +225,7 @@ class Mario(Entity):
             if self.velocity[0] >= 0:
                 animation_state = 'slide'
 
-        if self.directions['right'] and not self.directions['left'] and not self.crouching:
+        if self.directions['right'] and not self.directions['left']:
             animation_state = 'run'
             self.velocity[0] += acceleration
             self.velocity[0] = min(speed, self.velocity[0])
@@ -228,7 +234,7 @@ class Mario(Entity):
             if self.velocity[0] <= 0:
                 animation_state = 'slide'
 
-        if (not (self.directions['right'] or self.directions['left'])) or (self.directions['right'] and self.directions['left']):
+        if (not (self.directions['right'] or self.directions['left'])) or (self.directions['right'] and self.directions['left']) or self.crouching:
             if abs(self.velocity[0]) > 1:
                 self.velocity[0] -= 0.2 * self.velocity[0]/abs(self.velocity[0])
                 animation_state = 'slide'

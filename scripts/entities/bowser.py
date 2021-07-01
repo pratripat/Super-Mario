@@ -14,6 +14,11 @@ class Bowser(Enemy):
         self.gravity = False
         self.load_rect()
 
+    def render(self):
+        super().render()
+
+        # pygame.draw.rect(self.game.screen, (255,0,0), (self.head_rect[0]-self.game.camera.scroll[0], self.head_rect[1]-self.game.camera.scroll[1], *self.head_rect.size))
+
     def load_rect(self):
         scale = self.current_animation.animation_data.config['scale']
 
@@ -68,10 +73,11 @@ class Bowser(Enemy):
 
         if self.game.entities.mario.center[0] > self.center[0]:
             self.offset[0] = 0
+            self.head_rect[0] = self.position[0]+self.image.get_width()-self.rect.w
         else:
             self.offset[0] = self.initial_offset[0]
+            self.head_rect[0] = self.position[0]
 
-        self.head_rect[0] = self.position[0]
         self.head_rect[1] = self.position[1]
 
         self.set_animation(animation_state)
