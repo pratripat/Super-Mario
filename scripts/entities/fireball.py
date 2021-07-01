@@ -43,3 +43,10 @@ class Fireball(Entity):
                 if rect_rect_collision(self.rect, enemy.rect) or rect_rect_collision(self.rect, enemy.head_rect):
                     enemy.fireball_hits -= 1
                     self.remove = True
+
+    @property
+    def on_screen(self):
+        return (
+            -self.rect.w < self.position[0]-self.game.camera.scroll[0] < self.game.screen.get_width() and
+            -self.rect.h < self.position[1]-self.game.camera.scroll[1] < self.game.screen.get_height()
+        )

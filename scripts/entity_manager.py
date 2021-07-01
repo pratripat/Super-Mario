@@ -84,6 +84,9 @@ class Entity_Manager:
                 animation = self.game.animations.get_animation('blast')
                 self.animations[animation] = fireball.center
 
+            elif not fireball.on_screen:
+                self.fireballs.remove(fireball)
+
         for firebar in self.firebars:
             firebar.update()
 
@@ -182,7 +185,7 @@ class Entity_Manager:
 
         if len(bridge_positions) > 0:
             self.game.tilemap.remove_entity('ground', pos=bridge_positions[-1])
-            self.waiting_timer = 10
+            self.waiting_timer = 5
             self.game.camera.scroll[0] -= 4
         else:
             self.breaking_bridge = False
