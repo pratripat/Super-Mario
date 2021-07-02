@@ -124,7 +124,7 @@ class Game:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = False
                     self.entities.mario.directions['down'] = True
-                    self.entities.mario.airtimer = 15
+                    self.entities.mario.airtimer = self.entities.mario.max_airtimer
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = False
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:
