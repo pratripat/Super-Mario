@@ -17,6 +17,7 @@ class Mario(Entity):
         self.current_animation_frame = None
         self.speed = 4
         self.airtimer = 0
+        self.max_airtimer = 15
         self.flicker_timer = 0
         self.invincible_timer = 0
         self.pipe_transition_timer = 0
@@ -107,7 +108,7 @@ class Mario(Entity):
                     self.invincible_timer = 0
                     self.current_animation_frame = None
                 elif int(self.invincible_timer*30)%3 == 0:
-                    self.current_animation_frame = self.current_animation.frame-self.game.dt
+                    self.current_animation_frame = self.current_animation.frame
                     self.star_animation_number += 1
                     self.star_animation_number %= 5
 
@@ -214,7 +215,7 @@ class Mario(Entity):
             self.airtimer = 0
             self.velocity[1] = 0
         elif self.airtimer == 0:
-            self.airtimer = 15
+            self.airtimer = self.max_airtimer
 
         if self.directions['left'] and not self.directions['right']:
             animation_state = 'run'
@@ -249,7 +250,7 @@ class Mario(Entity):
             if self.airtimer == 0:
                 self.jump_sfx.play()
 
-            if self.airtimer < 15:
+            if self.airtimer < self.max_airtimer:
                 self.velocity[1] -= 3.8*self.airtimer/25
                 self.airtimer += 1
 

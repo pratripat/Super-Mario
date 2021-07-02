@@ -52,6 +52,7 @@ class Block:
             if rect_rect_collision(rect, self.rect):
                 function()
                 player.velocity[1] = 0
+                player.airtimer = player.max_airtimer
 
                 if self.hits > 0:
                     self.hits -= 1

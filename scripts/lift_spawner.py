@@ -9,6 +9,9 @@ class Lift_Spawner:
         self.max_spawn_timer = 3
 
     def spawn_lift(self):
+        if self.game.paused:
+            return
+            
         if int(self.spawn_timer) > 0:
             self.spawn_timer -= self.game.dt
 
