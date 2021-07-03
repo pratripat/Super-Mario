@@ -79,7 +79,7 @@ class Group:
 
     #Renders group's name
     def render_name(self):
-        self.editor.font.render(self.editor.screen, '-'+self.name+'-', (150, 30), center=(True, True), color=(13,19,42))
+        self.editor.font.render(self.editor.screen, '-'+self.name+'-', (150, 30), center=(True, True), color=(13,19,42), scale=0.7)
 
     #Checks if a image has been clicked on, and if that happens select it
     def update_on_mouse_click(self, position):

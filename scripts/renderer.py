@@ -17,6 +17,8 @@ class Renderer:
         self.game.entities.render()
         self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
 
+        self.game.ui.render()
+
         pygame.display.update()
 
     def render_tiles_with_id(self, visible_tiles):

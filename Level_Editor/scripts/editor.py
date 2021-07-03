@@ -9,7 +9,7 @@ class Editor:
 
         self.screen = pygame.display.set_mode((1000, 600), pygame.RESIZABLE)
         self.clock = pygame.time.Clock()
-        self.font = Font('data/graphics/spritesheet/font')
+        self.font = Font('data/graphics/spritesheet/leveleditor_font')
         self.res = 48
         self.world = World(self)
         self.selection_panel = Selection_Panel(self)

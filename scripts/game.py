@@ -7,6 +7,8 @@ from .camera import Camera
 from .pipe_guides import Pipe_Guides
 from .lift_spawner import Lift_Spawner_Manager
 from .cutscene_manager import Cutscene
+from .font_renderer import Font
+from .ui import UI
 
 pygame.init()
 
@@ -18,9 +20,11 @@ class Game:
         self.framerate = 80
         pygame.mouse.set_visible(False)
 
-        self.animations = Animation_Handler()
-        self.renderer = Renderer(self)
         self.camera = Camera()
+        self.renderer = Renderer(self)
+        self.animations = Animation_Handler()
+        self.font = Font('data/graphics/spritesheet/font.png')
+        self.ui = UI(self)
 
         self.load_level()
 
@@ -91,6 +95,7 @@ class Game:
         self.camera.update(self.screen, self.tilemap)
         self.lift_spawners.update()
         self.entities.run()
+        self.ui.update()
 
         self.renderer.render()
 

@@ -14,6 +14,7 @@ class Question_Block(Block):
         self.coins = [Coin(game, [self.rect[0]+self.animation.image.get_width()/2, self.rect[1]-self.animation.image.get_height()/2]) for _ in range(self.hits)]
         self.coin = self.coins[0]
         self.updating_coins = []
+        self.is_invisible = len(self.game.tilemap.get_tiles_with_position('invisible', list(self.rect.topleft))) > 0
 
     def set_new_animation(self, id, index):
         if id not in self.game.animations.animations:
@@ -28,6 +29,9 @@ class Question_Block(Block):
         self.animation = self.game.animations.get_animation(id)
 
     def render(self):
+        if self.is_invisible:
+            return
+
         self.animation.render(self.game.screen, [self.rect[0]-self.game.camera.scroll[0], self.rect[1]-self.offset-self.game.camera.scroll[1]])
 
         for coin in self.updating_coins:
@@ -52,6 +56,7 @@ class Question_Block(Block):
 
             if self.hits == 1:
                 self.animation = self.game.animations.get_animation(f'{self.game.world_type}_empty_block')
+                self.is_invisible = False
 
             self.coin.updating = True
             self.coins.remove(self.coin)

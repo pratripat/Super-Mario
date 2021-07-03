@@ -113,6 +113,7 @@ class Entity_Manager:
             if rect_rect_collision(coin.rect, self.mario.rect):
                 coin.coin_sfx.play()
                 self.coins.remove(coin)
+                self.game.ui.coins += 1
 
         for axe in self.axes:
             axe.update()
@@ -214,7 +215,11 @@ class Entity_Manager:
     def get_colliding_entities(self, entity=None, enemies=False, lifts=True):
         colliding_blocks = []
         for block in self.blocks:
-            colliding_blocks.append(block.rect)
+            if block.type == 'question':
+                if not block.is_invisible:
+                    colliding_blocks.append(block.rect)
+            else:
+                colliding_blocks.append(block.rect)
 
         if lifts:
             for lift in self.lifts:
