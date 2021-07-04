@@ -30,6 +30,7 @@ class Block:
                 coin.coin_sfx.play()
                 self.game.entities.coins.remove(coin)
                 self.game.entities.coin_animations.append(Coin(self.game, list(coin.rect.center)))
+                self.game.ui.coins += 1
 
         for item in self.game.entities.items:
             if rect_rect_collision(item.rect, self.rect):

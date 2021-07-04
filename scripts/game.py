@@ -7,6 +7,8 @@ from .camera import Camera
 from .pipe_guides import Pipe_Guides
 from .lift_spawner import Lift_Spawner_Manager
 from .cutscene_manager import Cutscene
+from .font_renderer import Font
+from .ui import UI
 
 pygame.init()
 
@@ -18,9 +20,11 @@ class Game:
         self.framerate = 80
         pygame.mouse.set_visible(False)
 
-        self.animations = Animation_Handler()
-        self.renderer = Renderer(self)
         self.camera = Camera()
+        self.renderer = Renderer(self)
+        self.animations = Animation_Handler()
+        self.font = Font('data/graphics/spritesheet/font.png')
+        self.ui = UI(self)
 
         self.load_level()
 
@@ -51,6 +55,7 @@ class Game:
 
         if not filepath:
             level, self.world_type, self.cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
+            self.ui.refresh(level)
 
         else:
             level = filepath
@@ -91,6 +96,7 @@ class Game:
         self.camera.update(self.screen, self.tilemap)
         self.lift_spawners.update()
         self.entities.run()
+        self.ui.update()
 
         self.renderer.render()
 
@@ -110,6 +116,10 @@ class Game:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = True
                     self.entities.mario.directions['down'] = False
+
+                    if self.world_type == 'underwater':
+                        self.entities.mario.airtimer = 0
+
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = True
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:

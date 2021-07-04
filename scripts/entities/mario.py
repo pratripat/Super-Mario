@@ -214,7 +214,7 @@ class Mario(Entity):
         if self.collisions['bottom']:
             self.airtimer = 0
             self.velocity[1] = 0
-        elif self.airtimer == 0:
+        elif self.airtimer == 0 and self.game.world_type != 'underwater':
             self.airtimer = self.max_airtimer
 
         if self.directions['left'] and not self.directions['right']:
@@ -251,7 +251,7 @@ class Mario(Entity):
                 self.jump_sfx.play()
 
             if self.airtimer < self.max_airtimer:
-                self.velocity[1] -= 3.8*self.airtimer/25
+                self.velocity[1] -= 4*self.airtimer/25
                 self.airtimer += 1
 
             #If player is at max height, setting the upward movement false and allowing player to fall

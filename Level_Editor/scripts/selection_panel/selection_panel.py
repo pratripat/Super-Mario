@@ -57,7 +57,7 @@ class Selection_Panel:
         pygame.draw.rect(self.editor.screen, (173,195,232), (0,0,self.width,self.editor.screen.get_height()))
 
         for button in self.buttons:
-            button.show(self.editor.screen, scale=0.7)
+            button.show(self.editor.screen, scale=0.5)
 
         if not self.current_group:
             return
