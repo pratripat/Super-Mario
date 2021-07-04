@@ -55,6 +55,7 @@ class Game:
 
         if not filepath:
             level, self.world_type, self.cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
+            self.ui.refresh(level)
 
         else:
             level = filepath
@@ -115,6 +116,10 @@ class Game:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = True
                     self.entities.mario.directions['down'] = False
+
+                    if self.world_type == 'underwater':
+                        self.entities.mario.airtimer = 0
+
                 if event.key == pygame.K_a or event.key == pygame.K_LEFT:
                     self.entities.mario.directions['left'] = True
                 if event.key == pygame.K_d or event.key == pygame.K_RIGHT:

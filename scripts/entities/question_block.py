@@ -52,6 +52,7 @@ class Question_Block(Block):
 
     def reveal(self):
         if self.hits > 0:
+            self.game.ui.coins += 1
             self.sfx.play()
 
             if self.hits == 1:

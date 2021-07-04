@@ -7,7 +7,7 @@ class Renderer:
 
     def refresh(self):
         self.background_color = (0,0,0)
-        if self.game.world_type == 'overworld':
+        if self.game.world_type in ['overworld', 'underwater']:
             self.background_color = (107, 139, 255)
 
     def render(self):

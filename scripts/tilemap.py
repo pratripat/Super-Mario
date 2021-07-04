@@ -12,7 +12,7 @@ class Tilemap:
     #Loads the json file
     def load(self):
         data = json.load(open(self.filename, 'r'))
-        for position in data:
+        for position in data.copy():
             pos, layer = position.split(':')
             id, filepath, index, scale = data[position]
             layer = int(layer)
