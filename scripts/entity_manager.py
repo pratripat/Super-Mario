@@ -235,6 +235,10 @@ class Entity_Manager:
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('pipes'))
         colliding_blocks.extend(self.game.tilemap.get_rects_with_id('mushroom'))
 
+        if self.game.world_type == 'underwater':
+            rect = pygame.Rect((self.game.tilemap.left, self.game.tilemap.top-(0.5*self.game.tilemap.RES), self.game.tilemap.right-self.game.tilemap.left, self.game.tilemap.RES))
+            colliding_blocks.append(rect)
+
         return colliding_blocks
 
     def get_enemies(self):

@@ -1,4 +1,4 @@
-import pygame, json
+import pygame, json, os
 from ..funcs import *
 from ..entity import Entity
 from .fireball import Fireball
@@ -201,8 +201,13 @@ class Mario(Entity):
         speed = self.speed
         acceleration = 0.15
 
-        if self.running:
+        if self.running and not self.game.world_type == 'underwater':
             speed = 7.5
+
+        if self.game.world_type == 'underwater':
+            self.max_airtimer = 13
+        else:
+            self.max_airtimer = 15
 
         animation_state = 'idle'
 
@@ -243,7 +248,10 @@ class Mario(Entity):
                 self.velocity[0] = 0
 
         if self.directions['down']:
-            self.velocity[1] += 1
+            if self.game.world_type == 'underwater':
+                self.velocity[1] += 0.5
+            else:
+                self.velocity[1] += 1
 
         #Jump
         elif self.directions['up']:
@@ -259,13 +267,22 @@ class Mario(Entity):
                 self.directions['up'] = False
                 self.directions['down'] = True
 
-        self.velocity[1] = min(8, self.velocity[1])
+            if self.game.world_type == 'underwater':
+                self.velocity[1] = max(-8, self.velocity[1])
+
+        if self.game.world_type == 'underwater':
+            self.velocity[1] = min(5, self.velocity[1])
+        else:
+            self.velocity[1] = min(8, self.velocity[1])
 
         if self.airtimer > 3:
             animation_state = 'jump'
 
         if self.crouching:
             animation_state = 'crouching'
+
+        if self.game.world_type == 'underwater' and self.airtimer > 0:
+            animation_state = 'swim'
 
         if self.current_animation_id.split('_')[-1] == 'shoot' and not int(self.current_animation.frame) == self.current_animation.animation_data.duration():
             return
