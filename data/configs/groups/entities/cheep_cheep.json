@@ -1,0 +1,8 @@
+{
+  "id": "cheep_cheep",
+  "filename": "data/graphics/spritesheet/cheep_cheep.png",
+  "indexes": [0, 1],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

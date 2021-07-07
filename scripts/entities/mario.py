@@ -268,7 +268,7 @@ class Mario(Entity):
                 self.directions['down'] = True
 
             if self.game.world_type == 'underwater':
-                self.velocity[1] = max(-8, self.velocity[1])
+                self.velocity[1] = max(-5, self.velocity[1])
 
         if self.game.world_type == 'underwater':
             self.velocity[1] = min(5, self.velocity[1])
