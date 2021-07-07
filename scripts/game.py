@@ -42,6 +42,7 @@ class Game:
         self.playing_cutscene = False
         self.cutscene = None
         self.cutscene_path = None
+        self.game_timer = 0
 
         if mario_dead:
             self.mario_data = 'small_mario'
@@ -78,6 +79,7 @@ class Game:
 
     def run(self):
         self.clock.tick(self.framerate)
+        self.game_timer += 1
 
         if self.clock.get_fps() < 30:
             return

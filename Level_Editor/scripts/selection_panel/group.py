@@ -65,9 +65,11 @@ class Group:
 
                 y += image.get_height()+10
 
+                max_width = max([image.image.get_width() for image in self.images])
+
                 if y > self.editor.screen.get_height():
                     y = 80
-                    x += image.get_width()+10
+                    x += max_width+10
 
     #Renders all the images in the group
     def render(self):
