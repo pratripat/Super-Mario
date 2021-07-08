@@ -17,6 +17,19 @@ class Spring(Entity):
     def update(self):
         super().update(self.game.dt)
 
+        if self.game.entities.mario.rect[0]+self.game.entities.mario.image.get_width() > self.position[0] and self.game.entities.mario.rect[0] < self.position[0]+self.image.get_width():
+            if self.game.entities.mario.rect[1]+self.game.entities.mario.image.get_height() >= self.position[1]+self.image.get_height()/4 and self.game.entities.mario.rect[1]+self.game.entities.mario.image.get_height() < self.position[1]+self.image.get_height() and self.game.entities.mario.directions['down']:
+                key_presses = [event for event in pygame.event.get() if event.type == pygame.KEYDOWN and event.key in [pygame.K_w, pygame.K_SPACE]]
+
+                if len(key_presses):
+                    self.game.entities.mario.velocity[1] = -30
+                    self.game.entities.mario.rect[1] += self.game.entities.mario.velocity[1]
+                    self.game.entities.mario.directions['up'] = True
+                    self.game.entities.mario.airtimer = 0
+                    self.game.entities.mario.jump_sfx.play()
+                    self.set_animation('shrink')
+                    self.current_animation.frame = 0
+
         if self.game.entities.mario.velocity[1] > 1 and self.game.entities.mario.directions['down']:
             if self.game.entities.mario.dead:
                 return
@@ -28,12 +41,3 @@ class Spring(Entity):
                 self.game.entities.mario.velocity[1] *= -1
                 self.set_animation('shrink')
                 self.current_animation.frame = 0
-
-                key_presses = [event for event in pygame.event.get() if event.type == pygame.KEYDOWN and event.key in [pygame.K_w, pygame.K_SPACE]]
-
-                if len(key_presses):
-                    self.game.entities.mario.velocity[1] = -30
-                    self.game.entities.mario.rect[1] += self.game.entities.mario.velocity[1]
-                    self.game.entities.mario.directions['up'] = True
-                    self.game.entities.mario.airtimer = 0
-                    self.game.entities.mario.jump_sfx.play()

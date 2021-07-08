@@ -14,6 +14,7 @@ from .entities.fire_breathe import Firebreathe
 from .entities.bowser import Bowser
 from .entities.cheep_cheep import Cheep_Cheep
 from .entities.spring import Spring
+from .entities.blooper import Blooper
 from .entities.axe import Axe
 from .funcs import *
 import pygame
@@ -29,6 +30,9 @@ class Entity_Manager:
         except:
             mario_rect = pygame.Rect(*position,10,10)
 
+        if len(position):
+            mario_rect.topleft = position.copy()
+
         try:
             self.flagpole = Flagpole(self.game, self.game.tilemap.get_rects_with_id('flagpole')[0])
         except:
@@ -37,7 +41,7 @@ class Entity_Manager:
         self.mario = Mario(self.game, mario_rect, self.game.mario_data, transition_velocity)
         self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Star_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('star_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
 
-        self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('koopa_flying')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Red_Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('red_koopa_flying')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]+[Bowser(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('bowser')]+[Cheep_Cheep(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('cheep_cheep')]
+        self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('koopa_flying')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Red_Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('red_koopa_flying')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]+[Bowser(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('bowser')]+[Cheep_Cheep(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('cheep_cheep')]+[Blooper(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('blooper')]
 
         self.coins = [Coin(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('coin')]
         self.lifts = [Lift(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('lift')]
@@ -48,6 +52,7 @@ class Entity_Manager:
         self.items = []
         self.brick_pieces = []
         self.fireballs = []
+        self.air_bubbles = []
         self.coin_animations = []
         self.animations = {}
         self.breaking_bridge = False
@@ -124,6 +129,12 @@ class Entity_Manager:
         for axe in self.axes:
             axe.update()
 
+        for air_bubble in self.air_bubbles[:]:
+            air_bubble.update()
+
+            if air_bubble.position[1] < -air_bubble.image.get_height():
+                self.air_bubbles.remove(air_bubble)
+
         delete_list = []
         for animation, position in self.animations.items():
             animation.run(self.game.dt)
@@ -172,6 +183,9 @@ class Entity_Manager:
 
         for fireball in self.fireballs:
             fireball.render()
+
+        for air_bubble in self.air_bubbles:
+            air_bubble.render()
 
         for animation, position in self.animations.items():
             animation.render(self.game.screen, (position[0]-self.game.camera.scroll[0], position[1]-self.game.camera.scroll[1]))

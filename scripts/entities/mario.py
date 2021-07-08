@@ -2,6 +2,7 @@ import pygame, json, os
 from ..funcs import *
 from ..entity import Entity
 from .fireball import Fireball
+from .air_bubble import Air_Bubble
 
 class Mario(Entity):
     def __init__(self, game, rect, id, transition_velocity):
@@ -24,6 +25,7 @@ class Mario(Entity):
         self.star_animation_number = 0
         self.pipe_transition_velocity = [0,0]
         self.pipe_transition_velocity_2 = [0,0]
+        self.bubble_timer = 3
 
         self.directions = {k:False for k in ['left', 'right', 'up', 'down']}
         self.directions['down'] = True
@@ -62,6 +64,13 @@ class Mario(Entity):
 
             return
 
+        if self.game.world_type == 'underwater':
+            self.bubble_timer -= self.game.dt
+
+            if self.bubble_timer <= 0:
+                self.game.entities.air_bubbles.append(Air_Bubble(self.game, self.center.copy()))
+                self.bubble_timer = 3
+
         if self.game.flag_animation:
             return
 
@@ -77,9 +86,9 @@ class Mario(Entity):
             self.pipe_transition_timer -= 1
 
             if self.pipe_transition_timer == 96:
-                self.set_position(self.pipe_final_position)
                 self.game.camera.scroll[0] = self.position[0]-self.game.screen.get_width()/2
                 self.game.load_level(level=self.game.level, filepath=self.pipe_file_path, world_type=self.pipe_world_type, position=self.pipe_final_position, transition_velocity=self.pipe_transition_velocity_2)
+                self.set_position(self.pipe_final_position)
                 if self.pipe_transition_velocity_2 != None and self.pipe_transition_velocity_2 != [0,0]:
                     pygame.mixer.music.stop()
 

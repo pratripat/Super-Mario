@@ -5,7 +5,7 @@ class Cheep_Cheep(Enemy):
         super().__init__(game, list(rect.topleft), f'{["red", "grey"][index]}_cheep_cheep', 'swim')
         self.gravity = False
         self.stompable = False
-        self.velocity = [-[1.2, 1][index],0]
+        self.velocity = [-[1.1, 1][index],0]
         self.target_velocity = 0
 
     def load_velocity(self):
