@@ -103,6 +103,8 @@ class Game:
         self.renderer.render()
 
     def event_loop(self):
+        self.mario_jumped = False
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -118,6 +120,7 @@ class Game:
                 if event.key == pygame.K_w or event.key == pygame.K_UP or event.key == pygame.K_SPACE:
                     self.entities.mario.directions['up'] = True
                     self.entities.mario.directions['down'] = False
+                    self.mario_jumped = True
 
                     if self.world_type == 'underwater':
                         self.entities.mario.airtimer = 0
