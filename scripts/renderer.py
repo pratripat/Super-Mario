@@ -4,6 +4,7 @@ from .funcs import *
 class Renderer:
     def __init__(self, game):
         self.game = game
+        self.texts = []
 
     def refresh(self):
         self.background_color = (0,0,0)
@@ -16,6 +17,9 @@ class Renderer:
         self.render_tiles_with_id(['castle', 'ground', 'chain', 'toad', 'princess'])
         self.game.entities.render()
         self.render_tiles_with_id(['pipes', 'flagpole', 'castle_half'])
+
+        for text in self.texts:
+            self.game.font.render(self.game.screen, text['text'], text['position'], scale=3, color=(255,255,255))
 
         self.game.ui.render()
 

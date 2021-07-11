@@ -49,7 +49,7 @@ class Cheep_Cheep(Enemy):
 
                 if self.game.game_timer % 10 == 0:
                     self.rect[1] += self.target_velocity
-            else:
+            elif self.stompable:
                 if not self.rect[1]-self.target_position>40:
                     self.velocity[1] += 0.25
 
