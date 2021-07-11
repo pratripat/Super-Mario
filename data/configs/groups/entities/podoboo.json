@@ -1,0 +1,8 @@
+{
+  "id": "podoboo",
+  "filename": "data/graphics/spritesheet/podoboo.png",
+  "indexes": [0],
+  "resize": true,
+  "scale": 3,
+  "autotile_config": null
+}

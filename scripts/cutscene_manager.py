@@ -1,6 +1,7 @@
 class Cutscene:
-    def __init__(self, entity_list, sequential_commands=[], independent_commands=[], function=None, args=[]):
+    def __init__(self, entity_list, font, sequential_commands=[], independent_commands=[], function=None, args=[]):
         self.entity_list = entity_list
+        self.font = font
         self.sequential_commands = []
         self.independent_commands = []
         self.finished = False
@@ -11,11 +12,11 @@ class Cutscene:
 
     def load_commands(self, sequential_commands, independent_commands):
         for command in sequential_commands:
-            object = Command(self.entity_list[command['entity']], command['entity_speed'], command['target_position'])
+            object = Command(self.font, self.entity_list[command['entity']], command['entity_speed'], command['target_position'], command['waiting_timer'], command['text'], command['position'])
             self.sequential_commands.append(object)
 
         for command in independent_commands:
-            object = Command(self.entity_list[command['entity']], command['entity_speed'], command['target_position'])
+            object = Command(self.font, self.entity_list[command['entity']], command['entity_speed'], command['target_position'], command['waiting_timer'], command['text'], command['position'])
             self.independent_commands.append(object)
 
     def update(self):
@@ -33,10 +34,14 @@ class Cutscene:
             self.finished = True
 
 class Command:
-    def __init__(self, entity, entity_speed, target_position):
+    def __init__(self, font, entity, entity_speed, target_position, waiting_timer, text, position):
+        self.font = font
         self.entity = entity
         self.entity_speed = entity_speed
         self.target_position = target_position
+        self.waiting_timer = waiting_timer
+        self.text = text
+        self.position = position
         self.movement_timer = 0
         self.finished = False
 
@@ -58,8 +63,18 @@ class Command:
             self.entity.directions['right'] = True
         if self.velocity[0] < 0:
             self.entity.directions['left'] = True
+        if self.velocity[0] == 0:
+            self.entity.directions['left'] = False
+            self.entity.directions['right'] = False
+            self.entity.velocity[0] = 0
 
         self.movement_timer += 1
 
         if self.movement_timer >= self.total_time:
-            self.finished = True
+            if self.waiting_timer <= 0:
+                self.finished = True
+            else:
+                self.waiting_timer -= 1
+                game = self.entity.game
+                game.renderer.texts.append({'text': self.text, 'position': [self.position[0]-game.camera.scroll[0], self.position[1]-game.camera.scroll[1]]})
+                self.text = ''

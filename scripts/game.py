@@ -161,7 +161,7 @@ class Game:
         data['sequential_commands'][0]['target_position'][0] += self.entities.mario.position[0]
 
         self.playing_cutscene = True
-        self.cutscene = Cutscene({'mario':self.entities.mario}, **data, function=function, args=args)
+        self.cutscene = Cutscene({'mario':self.entities.mario}, self.font, **data, function=function, args=args)
 
     def main_loop(self):
         while True:
