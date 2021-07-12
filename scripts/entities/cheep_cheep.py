@@ -60,6 +60,7 @@ class Cheep_Cheep(Enemy):
             self.dead = True
             self.falling = True
             self.stomp_sfx.play()
+            self.game.score_system.add_score('enemy', 'cheep_cheep')
 
     @property
     def on_screen(self):

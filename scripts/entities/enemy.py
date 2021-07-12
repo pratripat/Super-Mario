@@ -36,12 +36,22 @@ class Enemy(Entity):
 
         super().update(self.game.dt)
 
+        enemies_id = {
+            f'{self.game.world_type}_koopa': 'koopa',
+            f'{self.game.world_type}_goomba': 'goomba',
+            f'{self.game.world_type}_piranha_plant': 'piranha_plant',
+            f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
+            f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            'blooper': 'blooper'
+        }
+
         for enemy in self.game.entities.enemies:
             if enemy != self and (enemy.id == f'{self.game.world_type}_koopa' or enemy.id == 'red_koopa') and (enemy.current_animation_id == f'{self.game.world_type}_koopa_rolling' or enemy.current_animation_id == 'red_koopa_rolling'):
                 if rect_rect_collision(enemy.rect, self.rect):
                     self.falling = True
                     self.velocity[1] = -5
                     self.stomp_sfx.play()
+                    self.game.score_system.add_score('enemy', enemies_id[enemy.id])
                     return
 
         if self.dead:

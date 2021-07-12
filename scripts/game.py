@@ -9,6 +9,7 @@ from .lift_spawner import Lift_Spawner_Manager
 from .cutscene_manager import Cutscene
 from .font_renderer import Font
 from .ui import UI
+from .score_system import Score_System
 
 pygame.init()
 
@@ -25,6 +26,7 @@ class Game:
         self.animations = Animation_Handler()
         self.font = Font('data/graphics/spritesheet/font.png')
         self.ui = UI(self)
+        self.score_system = Score_System(self)
 
         self.load_level()
 
@@ -38,8 +40,10 @@ class Game:
     def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
         self.paused = False
         self.castle_clear = False
+        self.level_clear = False
         self.flag_animation = False
         self.playing_cutscene = False
+        self.reduce_coins = False
         self.cutscene = None
         self.cutscene_path = None
         self.game_timer = 0
@@ -83,6 +87,13 @@ class Game:
 
         if self.clock.get_fps() < 30:
             return
+
+        if self.reduce_coins:
+            if self.ui.time > 0:
+                self.ui.time -= 1
+                self.score_system.add_score('others', 'time')
+            else:
+                pygame.mixer.music.stop()
 
         if self.playing_cutscene:
             self.cutscene.update()

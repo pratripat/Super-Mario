@@ -40,6 +40,7 @@ class Koopa(Enemy):
             self.velocity[1] = min(3, self.velocity[1])
 
     def stomped(self):
+        self.game.score_system.add_score('enemy', 'koopa')
         state = self.current_animation_id
 
         if state == f'{self.game.world_type}_koopa_idle':
@@ -140,6 +141,7 @@ class Red_Koopa(Koopa):
             self.flying = not self.flying
 
     def stomped(self):
+        self.game.score_system.add_score('enemy', 'koopa')
         state = self.current_animation_id
 
         if state == 'red_koopa_idle':
