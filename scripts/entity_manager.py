@@ -126,6 +126,7 @@ class Entity_Manager:
                 coin.coin_sfx.play()
                 self.coins.remove(coin)
                 self.game.ui.coins += 1
+                self.game.score_system.add_score('others', 'coin')
 
         for axe in self.axes:
             axe.update()

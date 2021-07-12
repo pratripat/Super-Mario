@@ -42,6 +42,7 @@ class Flagpole:
 
             self.game.paused = True
             self.game.flag_animation = True
+            self.game.level_clear = True
             self.game.entities.mario.flip(False)
             self.game.entities.mario.set_animation('hold')
 
@@ -69,4 +70,9 @@ class Flagpole:
 
     def load_next_level(self):
         if not pygame.mixer.music.get_busy():
-            self.game.load_level(self.game.level+1)
+            if not self.game.ui.time > 0:
+                self.game.load_level(self.game.level+1)
+            elif not self.game.reduce_coins:
+                    self.game.reduce_coins = True
+                    pygame.mixer.music.load('data/music/count_down.wav')
+                    pygame.mixer.music.play()

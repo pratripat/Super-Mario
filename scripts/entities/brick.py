@@ -41,6 +41,7 @@ class Brick(Block):
                 return
 
     def burst(self):
+        self.game.score_system.add_score('others', 'brick')
         self.brick_break_sfx.play()
         self.remove = True
 

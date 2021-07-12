@@ -4,12 +4,13 @@ from .funcs import *
 class Renderer:
     def __init__(self, game):
         self.game = game
-        self.texts = []
 
     def refresh(self):
         self.background_color = (0,0,0)
         if self.game.world_type in ['overworld', 'underwater']:
             self.background_color = (107, 139, 255)
+
+        self.texts = []    
 
     def render(self):
         self.game.screen.fill(self.background_color)

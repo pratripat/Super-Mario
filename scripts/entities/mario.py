@@ -170,11 +170,20 @@ class Mario(Entity):
 
             rect[0] += self.velocity[0]
 
+            enemies = {
+                f'{self.game.world_type}_koopa': 'koopa',
+                f'{self.game.world_type}_goomba': 'goomba',
+                f'{self.game.world_type}_piranha_plant': 'piranha_plant',
+                f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
+                f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+                'blooper': 'blooper'
+            }
             if rect_rect_collision(rect, enemy.rect):
                 if self.invincible_star:
                     enemy.dead = True
                     enemy.falling = True
                     enemy.stomp_sfx.play()
+                    self.game.score_system.add_score('enemy', enemies[enemy.id])
                 else:
                     self.change_state('enemy')
                 return
@@ -228,6 +237,7 @@ class Mario(Entity):
         if self.collisions['bottom']:
             self.airtimer = 0
             self.velocity[1] = 0
+            self.game.score_system.mario_jumps = 0
         elif self.airtimer == 0 and self.game.world_type != 'underwater':
             self.airtimer = self.max_airtimer
 

@@ -11,3 +11,4 @@ class Super_Mushroom(Mushroom):
         if rect_rect_collision(self.rect, self.game.entities.mario.rect):
             self.game.entities.mario.change_state('power_up')
             self.used = True
+            self.game.score_system.add_score('others', 'power_up')

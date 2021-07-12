@@ -62,6 +62,7 @@ class Question_Block(Block):
             self.coin.updating = True
             self.coins.remove(self.coin)
             self.updating_coins.append(self.coin)
+            self.game.score_system.add_score('others', 'coin')
 
             if len(self.coins):
                 self.coin = self.coins[0]

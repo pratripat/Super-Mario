@@ -19,11 +19,21 @@ class Block:
         self.offset_counter += 0.2
         self.offset = math.sin(self.offset_counter)*10
 
+        enemies = {
+            f'{self.game.world_type}_koopa': 'koopa',
+            f'{self.game.world_type}_goomba': 'goomba',
+            f'{self.game.world_type}_piranha_plant': 'piranha_plant',
+            f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
+            f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            'blooper': 'blooper'
+        }
+
         for enemy in self.game.entities.get_enemies():
             if rect_rect_collision(enemy.rect, self.rect):
                 enemy.falling = True
                 enemy.velocity[1] = -5
                 enemy.stomp_sfx.play()
+                self.game.score_system.add_score('enemy', enemies[enemy.id])
 
         for coin in self.game.entities.coins[:]:
             if rect_rect_collision(coin.rect, self.rect):
