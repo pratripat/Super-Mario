@@ -19,6 +19,8 @@ class Game:
         self.screen = pygame.display.set_mode((960, 700), pygame.RESIZABLE+pygame.SCALED)
         self.clock = pygame.time.Clock()
         self.framerate = 80
+        self.game_timer = 0
+        self.level = 0
         pygame.mouse.set_visible(False)
 
         self.camera = Camera()
@@ -46,10 +48,23 @@ class Game:
         self.reduce_coins = False
         self.cutscene = None
         self.cutscene_path = None
-        self.game_timer = 0
+
+        if level != self.level:
+            self.game_timer = 0
 
         if mario_dead:
             self.mario_data = 'small_mario'
+
+            if self.entities.mario.lives == 0:
+                world_level, world_type, cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
+                world_number = world_level.split('/')[0].split('-')[1]
+
+                level = level//4*int(world_number)
+
+                self.entities.mario.lives = 3
+
+                self.game_timer = 0
+
         else:
             try:
                 self.mario_data = self.entities.mario.id
@@ -76,10 +91,13 @@ class Game:
         self.camera.scroll[0] = self.entities.mario.position[0]-self.screen.get_width()/2
         self.camera.set_target(self.entities.mario)
 
-        self.play_music()
-
         if self.cutscene_path:
             self.load_cutscene(self.cutscene_path)
+
+        if self.game_timer >= 240:
+            self.play_music()
+
+        pygame.event.clear()
 
     def run(self):
         self.clock.tick(self.framerate)
@@ -88,30 +106,37 @@ class Game:
         if self.clock.get_fps() < 30:
             return
 
-        if self.reduce_coins:
-            if self.ui.time > 0:
-                self.ui.time -= 1
-                self.score_system.add_score('others', 'time')
-            else:
-                pygame.mixer.music.stop()
+        if self.game_timer == 240:
+            pygame.event.clear()
+            self.play_music()
 
-        if self.playing_cutscene:
-            self.cutscene.update()
+        if self.game_timer > 240:
+            if self.reduce_coins:
+                if self.ui.time > 0:
+                    self.ui.time -= 1
+                    self.score_system.add_score('others', 'time')
+                else:
+                    pygame.mixer.music.stop()
 
-        if self.playing_cutscene and self.cutscene.finished:
-            if self.cutscene.function:
-                self.cutscene.function(*self.cutscene.args)
+            if self.playing_cutscene:
+                self.cutscene.update()
 
-            if self.cutscene and self.cutscene.finished:
-                self.playing_cutscene = False
-                self.cutscene = None
+            if self.playing_cutscene and self.cutscene.finished:
+                if self.cutscene.function:
+                    self.cutscene.function(*self.cutscene.args)
 
-        self.camera.update(self.screen, self.tilemap)
-        self.lift_spawners.update()
-        self.entities.run()
-        self.ui.update()
+                if self.cutscene and self.cutscene.finished:
+                    self.playing_cutscene = False
+                    self.cutscene = None
 
-        self.renderer.render()
+            self.camera.update(self.screen, self.tilemap)
+            self.lift_spawners.update()
+            self.entities.run()
+            self.ui.update()
+
+            self.renderer.render()
+        else:
+            self.renderer.render_level_details()
 
     def event_loop(self):
         self.mario_jumped = False

@@ -17,6 +17,7 @@ class Mario(Entity):
         self.invincible_star = False
         self.current_animation_frame = None
         self.speed = 4
+        self.lives = 3
         self.airtimer = 0
         self.max_airtimer = 15
         self.flicker_timer = 0
@@ -416,6 +417,7 @@ class Mario(Entity):
         self.fireball_sfx.play()
 
     def die(self, jump=True):
+        self.lives -= 1
         self.dead = True
         self.set_animation('fall')
         pygame.mixer.music.load('data/music/death.wav')
