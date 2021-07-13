@@ -42,6 +42,7 @@ class Enemy(Entity):
             f'{self.game.world_type}_piranha_plant': 'piranha_plant',
             f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
             f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            'red_koopa': 'koopa',
             'blooper': 'blooper'
         }
 
