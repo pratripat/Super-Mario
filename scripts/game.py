@@ -39,7 +39,10 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
+    def load_level(self, level=7, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
+        if level > 7:
+            self.load_cutscene('data/configs/cutscenes/wait.json', self.load_level, [level+1])
+
         self.paused = False
         self.castle_clear = False
         self.level_clear = False
@@ -59,7 +62,7 @@ class Game:
                 world_level, world_type, cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
                 world_number = world_level.split('/')[0].split('-')[1]
 
-                level = level//4*int(world_number)
+                level = (int(world_number)-1)*4
 
                 self.entities.mario.lives = 3
 

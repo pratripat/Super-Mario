@@ -36,14 +36,14 @@ class Fireball(Entity):
             f'{self.game.world_type}_koopa': 'koopa',
             f'{self.game.world_type}_goomba': 'goomba',
             f'{self.game.world_type}_piranha_plant': 'piranha_plant',
-            f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
-            f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            f'red_cheep_cheep': 'red_cheep_cheep',
+            f'grey_cheep_cheep': 'grey_cheep_cheep',
             'red_koopa': 'koopa',
             'blooper': 'blooper'
         }
 
         for enemy in self.game.entities.enemies:
-            if enemy.id == 'podaboo':
+            if enemy.id == 'podoboo':
                 continue
 
             if enemy.id != 'bowser' or (enemy.id == 'bowser' and enemy.fireball_hits <= 0):
@@ -51,7 +51,7 @@ class Fireball(Entity):
                     enemy.dead = True
                     enemy.remove = True
                     self.remove = True
-                    self.game.score_system.add_score('enemy', enemies[enemy.id])
+                    self.game.score_system.add_score('enemy', enemies[enemy.id], enemy)
                     return
             else:
                 if rect_rect_collision(self.rect, enemy.rect) or rect_rect_collision(self.rect, enemy.head_rect):

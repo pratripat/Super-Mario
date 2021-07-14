@@ -25,4 +25,4 @@ class Axe:
             pygame.mixer.music.load('data/music/bowser_die.wav')
             pygame.mixer.music.play()
             pygame.mixer.music.queue('data/music/castle_clear.wav')
-            self.game.score_system.add_score('enemy', 'bowser')
+            self.game.score_system.add_score('enemy', 'bowser', [enemy for enemy in self.game.entities.enemies if enemy.id == 'bowser'][0])

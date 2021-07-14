@@ -6,6 +6,7 @@ class Flagpole:
         self.game = game
         self.rect = rect
         self.flag_taken_down = False
+        self.distance = 0
         self.load_level = 0
         self.waiting_timer = 40
         self.flag_image = pygame.image.load('data/graphics/images/flag.png').convert()
@@ -36,6 +37,11 @@ class Flagpole:
         rect = self.game.entities.mario.rect.copy()
 
         if rect_rect_collision(self.game.entities.mario.rect, self.rect):
+            if self.distance == 0:
+                self.distance = self.rect[1]+self.rect[3]-self.game.entities.mario.position[1]
+                self.distance = self.distance//3
+                print(self.distance)
+
             if not self.game.paused:
                 pygame.mixer.music.load('data/music/flagpole.wav')
                 pygame.mixer.music.play()
@@ -67,6 +73,17 @@ class Flagpole:
 
             self.game.entities.mario.rect[0] = self.rect[0]+self.game.entities.mario.rect[2]-24
             self.game.entities.mario.flip(True)
+
+            if self.distance < 18:
+                self.game.score_system.add_score('others', 'flagpole_100', self.game.entities.mario)
+            elif self.distance < 58:
+                self.game.score_system.add_score('others', 'flagpole_400', self.game.entities.mario)
+            elif self.distance < 82:
+                self.game.score_system.add_score('others', 'flagpole_800', self.game.entities.mario)
+            elif self.distance < 128:
+                self.game.score_system.add_score('others', 'flagpole_2000', self.game.entities.mario)
+            else:
+                self.game.score_system.add_score('others', 'flagpole_5000', self.game.entities.mario)
 
     def load_next_level(self):
         if not pygame.mixer.music.get_busy():

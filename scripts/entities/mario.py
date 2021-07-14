@@ -14,7 +14,7 @@ class Mario(Entity):
         self.crouching = False
         self.flickering = False
         self.pipe_transition = False
-        self.invincible_star = False
+        self.invincible_star = True
         self.current_animation_frame = None
         self.speed = 4
         self.lives = 3
@@ -175,16 +175,18 @@ class Mario(Entity):
                 f'{self.game.world_type}_koopa': 'koopa',
                 f'{self.game.world_type}_goomba': 'goomba',
                 f'{self.game.world_type}_piranha_plant': 'piranha_plant',
-                f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
-                f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+                f'red_cheep_cheep': 'red_cheep_cheep',
+                f'grey_cheep_cheep': 'grey_cheep_cheep',
+                'red_koopa': 'koopa',
                 'blooper': 'blooper'
             }
             if rect_rect_collision(rect, enemy.rect):
                 if self.invincible_star:
-                    enemy.dead = True
-                    enemy.falling = True
-                    enemy.stomp_sfx.play()
-                    self.game.score_system.add_score('enemy', enemies[enemy.id])
+                    if not enemy.id == 'podoboo':
+                        enemy.dead = True
+                        enemy.falling = True
+                        enemy.stomp_sfx.play()
+                        self.game.score_system.add_score('enemy', enemies[enemy.id], enemy)
                 else:
                     self.change_state('enemy')
                 return
@@ -340,7 +342,7 @@ class Mario(Entity):
             self.invisible = True
         elif type == 'star':
             self.invincible_star = True
-            self.invincible_timer = 9
+            self.invincible_timer = 10
 
             pygame.mixer.music.load('data/music/star.wav')
             pygame.mixer.music.play(3)

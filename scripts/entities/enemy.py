@@ -40,8 +40,8 @@ class Enemy(Entity):
             f'{self.game.world_type}_koopa': 'koopa',
             f'{self.game.world_type}_goomba': 'goomba',
             f'{self.game.world_type}_piranha_plant': 'piranha_plant',
-            f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
-            f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            f'red_cheep_cheep': 'red_cheep_cheep',
+            f'grey_cheep_cheep': 'grey_cheep_cheep',
             'red_koopa': 'koopa',
             'blooper': 'blooper'
         }
@@ -52,7 +52,7 @@ class Enemy(Entity):
                     self.falling = True
                     self.velocity[1] = -5
                     self.stomp_sfx.play()
-                    self.game.score_system.add_score('enemy', enemies_id[enemy.id])
+                    self.game.score_system.add_score('enemy', enemies_id[enemy.id], enemy)
                     return
 
         if self.dead:
