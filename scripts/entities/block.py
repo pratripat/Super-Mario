@@ -23,18 +23,20 @@ class Block:
             f'{self.game.world_type}_koopa': 'koopa',
             f'{self.game.world_type}_goomba': 'goomba',
             f'{self.game.world_type}_piranha_plant': 'piranha_plant',
-            f'{self.game.world_type}_red_cheep_cheep': 'red_cheep_cheep',
-            f'{self.game.world_type}_grey_cheep_cheep': 'grey_cheep_cheep',
+            f'red_cheep_cheep': 'red_cheep_cheep',
+            f'grey_cheep_cheep': 'grey_cheep_cheep',
             'red_koopa': 'koopa',
-            'blooper': 'blooper'
+            'blooper': 'blooper',
+            'bowser': 'bowser'
         }
 
         for enemy in self.game.entities.get_enemies():
             if rect_rect_collision(enemy.rect, self.rect):
-                enemy.falling = True
-                enemy.velocity[1] = -5
-                enemy.stomp_sfx.play()
-                self.game.score_system.add_score('enemy', enemies[enemy.id])
+                if not enemy.id == 'podoboo':
+                    enemy.falling = True
+                    enemy.velocity[1] = -5
+                    enemy.stomp_sfx.play()
+                    self.game.score_system.add_score('enemy', enemies[enemy.id], enemy)
 
         for coin in self.game.entities.coins[:]:
             if rect_rect_collision(coin.rect, self.rect):
@@ -45,7 +47,10 @@ class Block:
 
         for item in self.game.entities.items:
             if rect_rect_collision(item.rect, self.rect):
-                item.velocity[0] *= -1
+                if item.center[0] > self.rect.center[0]:
+                    item.velocity[0] = abs(item.velocity[0])
+                else:
+                    item.velocity[0] = -abs(item.velocity[0])
                 item.velocity[1] = -8
                 item.rect[1] -= self.offset
 

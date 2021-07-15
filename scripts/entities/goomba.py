@@ -13,7 +13,7 @@ class Goomba(Enemy):
         self.set_animation('die')
         self.dead = True
         self.stomp_sfx.play()
-        self.game.score_system.add_score('enemy', 'goomba')
+        self.game.score_system.add_score('enemy', 'goomba', self)
 
     def load_collision_rect(self):
         collision_rect = json.load(open('data/configs/collision_boxes/goomba.json', 'r'))['goomba']

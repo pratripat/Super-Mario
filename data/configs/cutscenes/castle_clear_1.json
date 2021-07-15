@@ -1,0 +1,8 @@
+{
+  "sequential_commands": [
+    {"entity": "mario", "entity_speed": 4, "target_position": [11, 0], "waiting_timer": 0, "text": "", "position": [0,0]},
+    {"entity": "mario", "entity_speed": 4, "target_position": [0, 0], "waiting_timer": 80, "text": "Thank you mario!", "position": [7536,192]},
+    {"entity": "mario", "entity_speed": 4, "target_position": [0, 0], "waiting_timer": 1, "text": "But our princess is in", "position": [7440,288]},
+    {"entity": "mario", "entity_speed": 4, "target_position": [0, 0], "waiting_timer": 400, "text": "another castle!", "position": [7440,336]}
+  ]
+}

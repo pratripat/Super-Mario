@@ -11,6 +11,7 @@ class Question_Block(Block):
         self.hits = hits
         self.set_new_animation(f'{self.game.world_type}_{id}', index)
         self.sfx = pygame.mixer.Sound('data/sfx/coin.wav')
+        self.bump_sfx = pygame.mixer.Sound('data/sfx/brick_bump.wav')
         self.coins = [Coin(game, [self.rect[0]+self.animation.image.get_width()/2, self.rect[1]-self.animation.image.get_height()/2]) for _ in range(self.hits)]
         self.coin = self.coins[0]
         self.updating_coins = []
@@ -66,3 +67,5 @@ class Question_Block(Block):
 
             if len(self.coins):
                 self.coin = self.coins[0]
+        else:
+            self.bump_sfx.play()

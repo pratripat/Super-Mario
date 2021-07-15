@@ -1,6 +1,7 @@
 from .entities.mario import Mario
 from .entities.question_block import Question_Block
 from .entities.power_up_block import Power_Up_Block
+from .entities.one_up_block import One_Up_Block
 from .entities.star_block import Star_Block
 from .entities.brick import Brick
 from .entities.goomba import Goomba
@@ -18,7 +19,7 @@ from .entities.blooper import Blooper
 from .entities.podoboo import Podoboo
 from .entities.axe import Axe
 from .funcs import *
-import pygame
+import pygame, json
 
 class Entity_Manager:
     def __init__(self, game, position, transition_velocity):
@@ -46,7 +47,7 @@ class Entity_Manager:
 
         self.mario = Mario(self.game, mario_rect, self.game.mario_data, transition_velocity)
         self.mario.lives = mario_lives
-        self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Star_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('star_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')]
+        self.blocks = [Power_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('power_up_question')] + [Star_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('star_question')] + [Question_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('question')] + [Question_Block(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), 'brick', 6, tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick_coin_6')] + [Brick(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('brick')] + [One_Up_Block(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('one_up_block')]
 
         self.enemies = [Goomba(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('goomba')]+[Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('koopa')]+[Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('koopa_flying')]+[Red_Koopa(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('red_koopa')]+[Red_Koopa(self.game, rect, 'flying') for rect in self.game.tilemap.get_rects_with_id('red_koopa_flying')]+[Piranha_Plant(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('piranha_plant')]+[Bowser(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('bowser')]+[Cheep_Cheep(self.game, pygame.Rect(*tiles['position'], tiles['image'].get_width(), tiles['image'].get_height()), tiles['index']) for tiles in self.game.tilemap.get_tiles_with_id('cheep_cheep')]+[Blooper(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('blooper')]+[Podoboo(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('podoboo')]
 
@@ -57,6 +58,7 @@ class Entity_Manager:
         self.axes = [Axe(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('axe')]
         self.springs = [Spring(self.game, rect) for rect in self.game.tilemap.get_rects_with_id('spring')]
         self.items = []
+        self.score_texts = []
         self.brick_pieces = []
         self.fireballs = []
         self.air_bubbles = []
@@ -66,6 +68,9 @@ class Entity_Manager:
         self.waiting_timer = 0
 
     def run(self):
+        if self.game.end_game:
+            return
+            
         self.update_pipe_transitions()
 
         if self.flagpole:
@@ -137,6 +142,12 @@ class Entity_Manager:
         for axe in self.axes:
             axe.update()
 
+        for score_text in self.score_texts[:]:
+            score_text.update()
+
+            if score_text.remove:
+                self.score_texts.remove(score_text)
+
         for air_bubble in self.air_bubbles[:]:
             air_bubble.update()
 
@@ -192,6 +203,9 @@ class Entity_Manager:
         for fireball in self.fireballs:
             fireball.render()
 
+        for score_text in self.score_texts:
+            score_text.render()
+
         for air_bubble in self.air_bubbles:
             air_bubble.render()
 
@@ -228,7 +242,10 @@ class Entity_Manager:
 
             self.firebreathes.clear()
 
-            self.game.load_cutscene('data/configs/cutscenes/castle_clear.json', self.game.load_level, [self.game.level+1])
+            world_level, world_type, cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[self.game.level]
+            world_number = world_level.split('/')[0].split('-')[1]
+
+            self.game.load_cutscene(f'data/configs/cutscenes/castle_clear_{world_number}.json', self.game.load_level, [self.game.level+1])
 
     def update_pipe_transitions(self):
         for (file_path, position, world_type, direction1, direction2), rect in self.game.pipe_guides.rects.items():
