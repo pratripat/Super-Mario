@@ -38,7 +38,7 @@ class UI:
         if self.coins >= 100:
             self.coins = 0
 
-        if not self.game.entities.mario.dead and not self.game.level_clear:
+        if not self.game.entities.mario.dead and not self.game.level_clear and not self.game.end_game:
             self.time -= self.game.dt
 
             if self.time <= 0:

@@ -26,7 +26,8 @@ class Block:
             f'red_cheep_cheep': 'red_cheep_cheep',
             f'grey_cheep_cheep': 'grey_cheep_cheep',
             'red_koopa': 'koopa',
-            'blooper': 'blooper'
+            'blooper': 'blooper',
+            'bowser': 'bowser'
         }
 
         for enemy in self.game.entities.get_enemies():

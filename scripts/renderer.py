@@ -47,6 +47,14 @@ class Renderer:
 
         pygame.display.update()
 
+    def render_game_over(self):
+        self.game.screen.fill((0,0,0))
+
+        self.game.font.render(self.game.screen, 'game over', [self.game.screen.get_width()/2, self.game.screen.get_height()/2], center=[True, False], scale=3)
+        self.game.ui.render()
+
+        pygame.display.update()
+
     def render_tiles_with_id(self, visible_tiles):
         for entity in self.game.tilemap.entities:
             if entity['id'] in visible_tiles:

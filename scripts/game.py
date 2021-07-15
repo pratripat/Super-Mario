@@ -39,9 +39,10 @@ class Game:
 
         return 1/self.clock.get_fps()
 
-    def load_level(self, level=7, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
+    def load_level(self, level=0, filepath=None, world_type='overworld', position=[], transition_velocity=None, mario_dead=False):
         if level > 7:
-            self.load_cutscene('data/configs/cutscenes/wait.json', self.load_level, [level+1])
+            self.load_cutscene('data/configs/cutscenes/wait.json', self.play_end_music)
+            return
 
         self.paused = False
         self.castle_clear = False
@@ -49,7 +50,9 @@ class Game:
         self.flag_animation = False
         self.playing_cutscene = False
         self.reduce_coins = False
+        self.game_over = False
         self.cutscene = None
+        self.end_game = False
         self.cutscene_path = None
 
         if level != self.level:
@@ -59,6 +62,8 @@ class Game:
             self.mario_data = 'small_mario'
 
             if self.entities.mario.lives == 0:
+                self.game_over = True
+                self.game_timer = -800
                 world_level, world_type, cutscene_path = json.load(open('data/levels/level_order.json', 'r'))[level]
                 world_number = world_level.split('/')[0].split('-')[1]
 
@@ -66,7 +71,8 @@ class Game:
 
                 self.entities.mario.lives = 3
 
-                self.game_timer = 0
+                pygame.mixer.music.load('data/music/game_over.wav')
+                pygame.mixer.music.play()
 
         else:
             try:
@@ -106,6 +112,9 @@ class Game:
         self.clock.tick(self.framerate)
         self.game_timer += 1
 
+        if self.end_game:
+            self.play_end_music()
+
         if self.clock.get_fps() < 30:
             return
 
@@ -138,8 +147,10 @@ class Game:
             self.ui.update()
 
             self.renderer.render()
-        else:
+        elif self.game_timer >= 0:
             self.renderer.render_level_details()
+        else:
+            self.renderer.render_game_over()
 
     def event_loop(self):
         self.mario_jumped = False
@@ -201,6 +212,15 @@ class Game:
 
         self.playing_cutscene = True
         self.cutscene = Cutscene({'mario':self.entities.mario}, self.font, **data, function=function, args=args)
+
+    def play_end_music(self):
+        self.end_game = True
+
+        if pygame.mixer.music.get_busy():
+            return
+
+        pygame.mixer.music.load('data/music/end_music.wav')
+        pygame.mixer.music.play(-1)
 
     def main_loop(self):
         while True:

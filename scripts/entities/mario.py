@@ -14,7 +14,7 @@ class Mario(Entity):
         self.crouching = False
         self.flickering = False
         self.pipe_transition = False
-        self.invincible_star = True
+        self.invincible_star = False
         self.current_animation_frame = None
         self.speed = 4
         self.lives = 3
@@ -178,7 +178,8 @@ class Mario(Entity):
                 f'red_cheep_cheep': 'red_cheep_cheep',
                 f'grey_cheep_cheep': 'grey_cheep_cheep',
                 'red_koopa': 'koopa',
-                'blooper': 'blooper'
+                'blooper': 'blooper',
+                'bowser': 'bowser'
             }
             if rect_rect_collision(rect, enemy.rect):
                 if self.invincible_star:

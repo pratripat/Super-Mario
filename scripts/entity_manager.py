@@ -68,6 +68,9 @@ class Entity_Manager:
         self.waiting_timer = 0
 
     def run(self):
+        if self.game.end_game:
+            return
+            
         self.update_pipe_transitions()
 
         if self.flagpole:

@@ -1,10 +1,11 @@
 from .entities.score_text import Score_Text
+import pygame
 
 class Score_System:
     def __init__(self, game):
         self.game = game
         self.mario_jumps = 0
-        self.score_order = [50, 100, 200, 400, 500, 800, 1000, 2000, 4000, 5000, 8000]
+        self.score_order = [50, 100, 200, 400, 500, 800, 1000, 2000, 4000, 5000, 8000, 10000]
         self.score_entity = {
             'enemy': {
                 'goomba': 1,
@@ -28,6 +29,7 @@ class Score_System:
                 'flagpole_5000': 9,
             }
         }
+        self.one_up_sfx = pygame.mixer.Sound('data/sfx/one_up.wav')
 
     def add_score(self, type, id, object=None):
         index = self.score_entity[type][id]
@@ -36,8 +38,14 @@ class Score_System:
             index += self.mario_jumps
             self.mario_jumps += 1
 
-        score = self.score_order[min(index, len(self.score_order))]
-        self.game.ui.score += score
+        score = self.score_order[min(index, len(self.score_order)-1)]
+
+        if score >= 10000:
+            self.game.entities.mario.lives += 1
+            score = '1 up'
+            self.one_up_sfx.play()
+        else:
+            self.game.ui.score += score
 
         if type != 'enemy' and id != 'power_up' and id not in ['flagpole_100', 'flagpole_400', 'flagpole_800', 'flagpole_2000', 'flagpole_5000']:
             return
