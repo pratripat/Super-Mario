@@ -5,8 +5,9 @@ class UI:
         self.game = game
         self.score = 0
         self.coins = 0
-        self.time = 40
+        self.time = 400
         self.animation = self.game.animations.get_animation('coin_ui')
+        self.hurry_sfx = pygame.mixer.Sound('data/sfx/hurry.wav')
 
     def render(self):
         #FIRST ROW
@@ -37,9 +38,17 @@ class UI:
 
         if self.coins >= 100:
             self.coins = 0
+            self.game.entities.mario.lives += 1
 
         if not self.game.entities.mario.dead and not self.game.level_clear and not self.game.end_game:
-            self.time -= self.game.dt
+            self.time -= self.game.dt*10/4
+
+            if round(self.time) == 100 and self.hurry_sfx.get_num_channels() == 0:
+                pygame.mixer.music.pause()
+                self.hurry_sfx.play()
+
+            if self.time < 100 and self.hurry_sfx.get_num_channels() == 0:
+                pygame.mixer.music.unpause()
 
             if self.time <= 0:
                 self.game.entities.mario.die()
